@@ -16,22 +16,20 @@ def get_conversations_tab_info():
 app.route('/conversation/<conversation_id>')
 def get_conversation_tab_info(conversation_id):
 
-	cp = ConversationParty.select()
-		          		  .join(Conversation, on=Conversation.id==ConversationParty.conversation)
-				          .where(ConversationParty.conversation==conversation_id).first()
+	cp = ConversationParty.select().join(Conversation, on=Conversation.id==ConversationParty.conversation).where(ConversationParty.conversation==conversation_id).first()
 
-    if cp:
-    	return _new_conversation_tab_info(cp.conversation.id,
-    									  cp.user.avatar,
-    									  cp.user.get_name(),
-    									  cp.last_message_ts,
-    									  cp.last_message)
-    else:
-    	return _new_conversation_tab_info(None,
-										  None,
-										  None,
-										  None,
-										  None)
+	if cp:
+		return _new_conversation_tab_info(cp.conversation.id,
+		cp.user.avatar,
+		cp.user.get_name(),
+		cp.last_message_ts,
+		cp.last_message)
+	else:
+		return _new_conversation_tab_info(None,
+		None,
+		None,
+		None,
+		None)
 
 
 @app.route('/conversation_data/<conversation_id>')
