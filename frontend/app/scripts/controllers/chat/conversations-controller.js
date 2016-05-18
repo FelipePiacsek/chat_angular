@@ -7,6 +7,7 @@ angular.module('chatApp').controller('ConversationsListController', function(Cha
 
 	var initController = function() {
 		ChatService.setConversationsReceivedCallback(callbackConversations);
+		$scope.feliz = "Feliz."
 	};
 	initController();
 

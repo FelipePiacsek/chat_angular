@@ -13,5 +13,5 @@ angular.module('chatApp')
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
-    ];
+    ];	
   });
