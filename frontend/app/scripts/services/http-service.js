@@ -6,7 +6,7 @@ angular.module('chatApp')
     };
     this.requests = function(endpoint, queryParameters){
         var token = "token"; //AuthData.getToken();
-        return $resource(endpoint, queryParameters,{
+        return $resource('http://localhost:5000' + endpoint, queryParameters,{
             post:{
                 method:"POST",
                 isArray:false,

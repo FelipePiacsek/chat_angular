@@ -37,7 +37,7 @@ module.exports = function (grunt) {
 
     angularFileLoader: {
       options:{
-        scripts: ['<%= yeoman.app %>/scripts/{,*/}*.js']
+        scripts: ['<%= yeoman.app %>/scripts/{,*/}*.js', '<%= yeoman.app %>/scripts/**/*.js']
       },
       your_target:{
         src: ['<%= yeoman.app %>/index.html']
