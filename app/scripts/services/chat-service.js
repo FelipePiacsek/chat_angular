@@ -1,3 +1,4 @@
+'use strict';
 angular.module('chatApp').service('ChatService',  function(HTTPService, CallbackUtils){
 
 	var currentConversationId = null;
@@ -5,18 +6,6 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	var messagesReceivedCallback = null;
 
 	var conversationsReceivedCallback = null;
-
-	this.setCurrentConversationId = function (id){
-		currentConversationId = id;
-	};
-
-	this.setMessagesReceivedCallback = function (callback){
-		messagesReceivedCallback = callback;
-	};
-
-	this.setConversationsReceivedCallback = function (callback){
-		conversationsReceivedCallback = callback;
-	};
 
 	var loadMessages = function(){
 		var endpoint = "/conversations/" + currentConversationId + "/";
@@ -34,6 +23,18 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	    }, function(promise) {
 	        CallbackUtils.mostrarErros(promise);
 	    });
+	};
+
+	this.setCurrentConversationId = function (id){
+		currentConversationId = id;
+	};
+
+	this.setMessagesReceivedCallback = function (callback){
+		messagesReceivedCallback = callback;
+	};
+
+	this.setConversationsReceivedCallback = function (callback){
+		conversationsReceivedCallback = callback;
 	};
 
 });

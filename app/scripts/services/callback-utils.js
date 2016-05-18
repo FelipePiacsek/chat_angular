@@ -1,3 +1,4 @@
+'use strict';
 angular.module('chatApp').service('CallbackUtils',  function(){
 
 	var caminhoPadraoParaMensagem = 'data.message';

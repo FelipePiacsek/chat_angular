@@ -25,8 +25,25 @@ module.exports = function (grunt) {
     dist: 'dist'
   };
 
+
+  grunt.loadNpmTasks('grunt-angular-file-loader');
+
+  grunt.registerTask('tmpl', 'Building templates', function(){
+    grunt.task.run('angularFileLoader');
+  });
+
   // Define the configuration for all the tasks
   grunt.initConfig({
+
+    angularFileLoader: {
+      options:{
+        scripts: ['<%= yeoman.app %>/scripts/{,*/}*.js']
+      },
+      your_target:{
+        src: ['<%= yeoman.app %>/index.html']
+      }
+
+    },
 
     // Project settings
     yeoman: appConfig,
@@ -39,7 +56,7 @@ module.exports = function (grunt) {
       },
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all', 'newer:jscs:all'],
+        tasks: ['angularFileLoader', 'newer:jshint:all', 'newer:jscs:all' ],
         options: {
           livereload: '<%= connect.options.livereload %>'
         }
@@ -424,7 +441,7 @@ module.exports = function (grunt) {
         singleRun: true
       }
     },
-    
+
     bowerInstall: {
  
     target: {
@@ -482,6 +499,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'angularFileLoader',
     'clean:dist',
     'wiredep',
     'useminPrepare',
@@ -500,11 +518,13 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
+    'angularFileLoader',
     'newer:jshint',
     'newer:jscs',
     'test',
     'build'
   ]);
+
 
 
   grunt.loadNpmTasks('grunt-bower-install');
