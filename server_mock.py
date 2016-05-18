@@ -8,25 +8,25 @@ app.run()
 def get_conversation_data():
 	messages = [{'sender_id':1,
 			 	 'text':'message 1',
-				 'translated_text:'translated message 1',
+				 'translated_text':'translated message 1',
 				 'conversation':'1',
 				 'canned_id':''},
 
 				 {'sender_id':1,
 			 	 'text':'message 2',
-				 'translated_text:'translated message 2',
+				 'translated_text':'translated message 2',
 				 'conversation':'1',
 				 'canned_id':''},
 
 				 {'sender_id':2,
 			 	 'text':'message 3',
-				 'translated_text:'translated message 3',
+				 'translated_text':'translated message 3',
 				 'conversation':'1',
 				 'canned_id':''},
 
 				 {'sender_id':2,
 			 	 'text':'message 4',
-				 'translated_text:'translated message 4',
+				 'translated_text':'translated message 4',
 				 'conversation':'1',
 				 'canned_id':''}]
 	their_language = 1
