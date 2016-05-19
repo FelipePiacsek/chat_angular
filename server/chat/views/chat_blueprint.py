@@ -13,6 +13,7 @@ def add_header(r):
 @chat.route('/conversations')
 def get_conversations_tab_data():
 	cps = ConversationParty.select(ConversationParty.conversation).group_by(ConversationParty.conversation).order_by(ConversationParty.last_message_ts.desc()).distinct(ConversationParty.conversation)
+	#cps = ConversationParty.raw('select cp.* from conversationparty as cp where cp.last_message_ts in (select max(last_message_ts) from conversationparty group by conversation_id);')
 	for cp in cps:
 		print(cp)
 	return json.dumps({'conversations': [_new_conversation_tab_data(cp) for cp in cps]})
