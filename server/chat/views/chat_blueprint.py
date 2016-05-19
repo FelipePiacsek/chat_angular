@@ -1,8 +1,7 @@
 from flask import Blueprint
-from datetime import datetime
 import json
 from models import Conversation, ConversationParty, User, Message
-from helpers import datetime_to_string
+from web.helpers import datetime_to_string
 
 chat = Blueprint('chat', __name__)
 
