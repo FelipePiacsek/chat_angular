@@ -1,12 +1,12 @@
-angular.module('chatApp')
-    .service('HTTPService', ['$resource',  function($resource) {
+angular.module('chatApp').service('HTTPService', ['$resource', 'Environment',  function($resource, Environment) {
 
     this.requests = function(endpoint){
         return this.requests(endpoint, {});
     };
-    this.requests = function(endpoint, queryParameters){
+    this.requests = function(suffix, queryParameters){
         var token = "token"; //AuthData.getToken();
-        return $resource(endpoint, queryParameters,{
+        var builtEndpoint = Environment.buildEndpoint(suffix);
+        return $resource(builtEndpoint, queryParameters,{
             post:{
                 method:"POST",
                 isArray:false
