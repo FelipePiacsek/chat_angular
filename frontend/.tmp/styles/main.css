@@ -64,20 +64,21 @@ body {
 .inline{
   display: inline-block;
 }
+/* Conversations */
 .conversation-item-header{
   display: inline-block;
-  width: 250px;
+  width: 500px;
 }
 .conversation-item-header-name{
   float: left; 
-  width: 125px;
+  width: 300px;
 }
 .conversation-item-header-date{
   float: right; 
   width: 70px;
 }
 .stretched{
-  width: 250px;
+  width: 500px;
 }
 
 /* Responsive: Portrait tablets and up */
