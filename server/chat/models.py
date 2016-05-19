@@ -18,8 +18,8 @@ class User(BaseModel):
 	last_name = CharField(null = True)
 	avatar = CharField(null = True)
 
-	def get_name():
-		return first_name + ' ' + lastname if first_name and lastname else username
+	def get_name(self):
+		return self.first_name + ' ' + self.last_name if self.first_name and self.last_name else self.username
 
 DeferredConversation = DeferredRelation()
 
