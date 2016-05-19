@@ -17,7 +17,7 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	};
 
 	var loadConversationsList = function(){
-		var endpoint = "/conversations/";
+		var endpoint = "http://localhost:5000/conversations/";
 	    HTTPService.requests(endpoint).getAll().$promise.then(function(response) {
 	    	conversationsReceivedCallback(response)
 	    }, function(promise) {
@@ -35,6 +35,7 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 
 	this.setConversationsReceivedCallback = function (callback){
 		conversationsReceivedCallback = callback;
+		loadConversationsList();
 	};
 
 });

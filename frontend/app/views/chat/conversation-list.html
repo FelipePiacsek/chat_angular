@@ -1,6 +1,9 @@
-<div class="list-group" ng-controller="ConversationsListController">
-  <a href="#" class="list-group-item active">
-    <h4 class="list-group-item-heading">{{feliz}}</h4>
-    <p class="list-group-item-text">...</p>
-  </a>
+<div class="list-group stretched" ng-controller="ConversationsListController">
+  <div class="list-group-item cursor-pointer" ng-click="selectConversation(c)" ng-repeat="c in conversations" ng-class="selectedConversation.id === c.id ? 'active' : ''">
+  <div class="conversation-item-header">
+    <h4 class="list-group-item-heading conversation-item-header-name">{{c.lastConversationee.name}}</h4>
+    <h4 class="list-group-item-heading conversation-item-header-date">{{c.lastConversationee.date | date : 'hh:MM'}}</h4>
+  </div>
+    <p class="list-group-item-text">{{c.lastMessage.text}}</p>
+  </div>
 </div>

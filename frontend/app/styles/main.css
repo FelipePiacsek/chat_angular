@@ -58,6 +58,27 @@ body {
 .marketing p + h4 {
   margin-top: 28px;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
+.inline{
+  display: inline-block;
+}
+.conversation-item-header{
+  display: inline-block;
+  width: 250px;
+}
+.conversation-item-header-name{
+  float: left; 
+  width: 125px;
+}
+.conversation-item-header-date{
+  float: right; 
+  width: 70px;
+}
+.stretched{
+  width: 250px;
+}
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
