@@ -17,8 +17,8 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	};
 
 	var loadConversationsList = function(){
-		var endpoint = "http://localhost:5000/conversations/";
-	    HTTPService.requests(endpoint).getAll().$promise.then(function(response) {
+		var endpoint = "conversations/";
+	    HTTPService.requests(endpoint).get().$promise.then(function(response) {
 	    	conversationsReceivedCallback(response)
 	    }, function(promise) {
 	        CallbackUtils.mostrarErros(promise);

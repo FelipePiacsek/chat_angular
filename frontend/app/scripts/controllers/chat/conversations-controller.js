@@ -3,6 +3,9 @@ angular.module('chatApp').controller('ConversationsListController', function(Cha
 	
 	var callbackConversations = function(conversations) {
 		$scope.conversations = conversations.conversations;
+		for (var i = 0; i < $scope.conversations.length; i++){
+			$scope.conversations[i].last_message.date = new Date($scope.conversations[i].last_message.date);
+		}
 		console.log($scope.conversations);
 	};
 
@@ -28,11 +31,10 @@ angular.module('chatApp').controller('ConversationsListController', function(Cha
 	$scope.selectConversation = function(c){
 		$scope.selectedConversation = c;
 	};
-	
+
 	var initController = function() {
-		//ChatService.setConversationsReceivedCallback(callbackConversations);
-		$scope.conversations = mock();
-		$scope.selectConversation($scope.conversations[0]);
+		ChatService.setConversationsReceivedCallback(callbackConversations);
+		//$scope.selectConversation($scope.conversations[0]);
 	};
 	initController();
 
