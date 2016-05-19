@@ -6,7 +6,5 @@ try:
 
 	database.create_tables(BaseModel.__subclasses__())
 
-	database.create_foreign_key(Conversation, Conversation.shown_conversation_party)
-
 except Exception as e:
 	print('Error while creating schema %s' % e)

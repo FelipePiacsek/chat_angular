@@ -1,12 +1,16 @@
-from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, DateTimeField, ForeignKeyField
+from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, DateTimeField, TextField, ForeignKeyField
 from datetime import datetime
+from web.config import config
 import os
 
 database = PostgresqlDatabase('chatdb', 
-							  user = os.environ.get('CHAT_DB_USER'),
-							  password = os.environ.get('CHAT_DB_PASS'),
+							  user = os.environ.get(config.get('db_username')),
+							  password = os.environ.get(config.get('db_password')),
 							  host='localhost'
 							  )
+
+user_placeholder = os.environ.get(config.get('user_placeholder'))
+conversation_placeholder = os.environ.get(config.get('conversation_placeholder'))
 
 class BaseModel(Model):
 	class Meta:
@@ -16,31 +20,28 @@ class User(BaseModel):
 	username = CharField()
 	first_name = CharField(null = True)
 	last_name = CharField(null = True)
-	avatar = CharField(null = True)
+	picture = CharField(null = True, default = user_placeholder)
+	created_at = DateTimeField(default = datetime.now)
+
 
 	def get_name(self):
 		return self.first_name + ' ' + self.last_name if self.first_name and self.last_name else self.username
 
-DeferredConversation = DeferredRelation()
+class Conversation(BaseModel):
+	name = CharField()
+	picture = CharField(null = True, default = conversation_placeholder)
 
 class ConversationParty(BaseModel):
-	conversation = ForeignKeyField(DeferredConversation)
+	conversation = ForeignKeyField(Conversation)
 	user = ForeignKeyField(User)
 	last_message = CharField(default = 'no messages')
-	last_message_ts = DateTimeField(default = datetime.now)
-
-class Conversation(BaseModel):
-	shown_conversation_party = ForeignKeyField(ConversationParty, null = True) 
+	last_message_ts = DateTimeField()
 	
-DeferredConversation.set_model(Conversation)
-
 class Message(BaseModel):
 	conversation_party = ForeignKeyField(ConversationParty)
-	text = CharField(default = '')
-	ts = DateTimeField(default = datetime.now)
+	text = TextField(default = '')
+	ts = DateTimeField()
 	file = CharField(null = True)
-
-
 
 
 
