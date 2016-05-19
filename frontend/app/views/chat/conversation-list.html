@@ -1,9 +1,14 @@
 <div class="list-group stretched" ng-controller="ConversationsListController">
-  <div class="list-group-item cursor-pointer" ng-click="selectConversation(c)" ng-repeat="c in conversations" ng-class="selectedConversation.conversation_id === c.conversation_id ? 'active' : ''">
-  <div class="conversation-item-header">
-    <h4 class="list-group-item-heading conversation-item-header-name">{{c.last_conversationee.name}}</h4>
-    <h4 class="list-group-item-heading conversation-item-header-date">{{c.last_message.date | date : 'hh:MM'}}</h4>
-  </div>
-    <p class="list-group-item-text">{{c.last_message.text}}</p>
-  </div>
+	<div class="list-group-item cursor-pointer inline" ng-click="selectConversation(c)" ng-repeat="c in conversations" ng-class="selectedConversation.conversation_id === c.conversation_id ? 'active' : ''">
+			<div class="conversation-picture-box">
+				<img class="conversation-picture" src="http://p2.trrsf.com/image/fget/cf/600/600/images.terra.com/2015/09/17/renato-augusto.jpeg">
+			</div>	
+			<div class="conversation-data-box">
+				<div class="conversation-item-header">
+					<h4 class="list-group-item-heading conversation-item-header-name">{{c.last_conversationee.name}}</h4>
+					<h4 class="list-group-item-heading conversation-item-header-date">{{c.last_message.date | date : 'hh:MM'}}</h4>
+				</div>
+				<p class="list-group-item-text">{{c.last_message.text}}</p>
+			</div>
+	</div>
 </div>

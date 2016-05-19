@@ -11,17 +11,17 @@ angular.module('chatApp').controller('ConversationsListController', function(Cha
 
 	var mock = function(){
 		var conversations = [];
-		var names = ["Felipe", "Eric", "Mariana", "Rafael", "Larissa", "Maria Thereza"]
+		var names = ["Felipe Macedo Piacsek", "Eric Ijiri Santiago", "Mariana Lopes Melo Franco", "Rafael Vaini de Souza", "Larissa Montezano", "Maria Thereza Sichi Machado"]
 		for(var i = 0; i < 6; i++){
 			var conversation = {};
-			conversation.id = i + 1;
-			conversation.lastConversationee = {};
-			conversation.lastConversationee.picture = null;
-			conversation.lastConversationee.name = names[i];
-			conversation.lastConversationee.date = new Date();
-			conversation.lastMessage = {};
-			conversation.lastMessage.date = new Date();
-			conversation.lastMessage.text = "Texto " + i + ".";
+			conversation.conversation_id = i + 1;
+			conversation.last_conversationee = {};
+			conversation.last_conversationee.picture = null;
+			conversation.last_conversationee.name = names[i];
+			conversation.last_conversationee.date = new Date();
+			conversation.last_message = {};
+			conversation.last_message.date = new Date();
+			conversation.last_message.text = "Texto " + i + ".";
 			conversations.push(conversation);
 		}
 		console.log(conversations);
@@ -33,8 +33,9 @@ angular.module('chatApp').controller('ConversationsListController', function(Cha
 	};
 
 	var initController = function() {
-		ChatService.setConversationsReceivedCallback(callbackConversations);
-		//$scope.selectConversation($scope.conversations[0]);
+		//ChatService.setConversationsReceivedCallback(callbackConversations);
+		$scope.conversations = mock();
+		$scope.selectConversation($scope.conversations[0]);
 	};
 	initController();
 
