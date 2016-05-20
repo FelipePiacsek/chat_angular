@@ -1,7 +1,9 @@
 from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, DateTimeField, TextField, ForeignKeyField
 from datetime import datetime
 from web.config import config
+import types
 import os
+import importlib
 
 database = PostgresqlDatabase('chatdb', 
 							  user = os.environ.get(config.get('db_username')),
@@ -11,6 +13,7 @@ database = PostgresqlDatabase('chatdb',
 
 user_placeholder = os.environ.get(config.get('user_placeholder'))
 conversation_placeholder = os.environ.get(config.get('conversation_placeholder'))
+message_functions_module = importlib.import_module(os.environ.get(config.get('message_functions_module')))
 
 class BaseModel(Model):
 	class Meta:
@@ -37,11 +40,25 @@ class ConversationParty(BaseModel):
 	last_message = CharField(default = 'no messages')
 	last_message_ts = DateTimeField()
 	
+class MessageType(BaseModel):
+	name = CharField()
+	constructor = CharField()
+
 class Message(BaseModel):
 	conversation_party = ForeignKeyField(ConversationParty)
-	text = TextField(default = '')
+	message_type = ForeignKeyField(MessageType)
+	content = TextField(null = True)
 	ts = DateTimeField()
 	file = CharField(null = True)
+
+	def run_constructor(self, args):
+		callback = getattr(message_functions_module, self.message_type.constructor)
+		if callback:
+			try:
+				self.content = callback(args)
+				return self.content
+			except Exception:
+				raise Exception('Found no valid constructor for message type.')
 
 
 

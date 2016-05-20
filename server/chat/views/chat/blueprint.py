@@ -28,6 +28,6 @@ def get_conversation_tab_data(conversation_id):
 @chat.route('/message_tab/<conversation_id>')
 def get_conversation_data(conversation_id):
 	cps = ConversationParty.select(ConversationParty.id, ConversationParty.conversation).where(ConversationParty.conversation==conversation_id)
-	messages = Messages.select(Message.text, Message.ts, Message.conversation_party).where(Message.conversation_party << cps).dicts()
-	return _new_message_tab_data(messages, cps)
+	messages = Message.select(Message.text, Message.ts, Message.conversation_party).where(Message.conversation_party << cps).dicts()
+	return _new_message_tab_data(cps, messages)
 
