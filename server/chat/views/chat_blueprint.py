@@ -2,6 +2,7 @@ from flask import Blueprint
 import json
 from models import Conversation, ConversationParty, User, Message
 from web.helpers import datetime_to_string
+from peewee import fn
 
 chat = Blueprint('chat', __name__)
 
@@ -12,10 +13,8 @@ def add_header(r):
 
 @chat.route('/conversations')
 def get_conversations_tab_data():
-	cps = ConversationParty.select(ConversationParty.conversation).group_by(ConversationParty.conversation).order_by(ConversationParty.last_message_ts.desc()).distinct(ConversationParty.conversation)
-	#cps = ConversationParty.raw('select cp.* from conversationparty as cp where cp.last_message_ts in (select max(last_message_ts) from conversationparty group by conversation_id);')
-	for cp in cps:
-		print(cp)
+	q = ConversationParty.select(fn.Max(ConversationParty.last_message_ts)).group_by(ConversationParty.conversation)
+	cps = ConversationParty.select().where(ConversationParty.last_message_ts << q)
 	return json.dumps({'conversations': [_new_conversation_tab_data(cp) for cp in cps]})
 
 
