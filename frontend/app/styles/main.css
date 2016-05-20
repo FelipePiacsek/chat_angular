@@ -50,7 +50,12 @@ body {
   font-size: 21px;
   padding: 14px 24px;
 }
-
+.pull-left{
+  float: left;
+}
+.pull-right{
+  float: right;
+}
 /* Supporting marketing content */
 .marketing {
   margin: 40px 0;
@@ -94,6 +99,14 @@ body {
 .conversation-data-box{
   float: right;
   width: 470px; 
+}
+.message-input{
+  float: left;
+  width: 85%;
+}
+.message-send-button{
+  float: left;
+  margin-left: 3px;
 }
 .
 /* Responsive: Portrait tablets and up */
