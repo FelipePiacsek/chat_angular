@@ -1,19 +1,20 @@
 from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, DateTimeField, TextField, ForeignKeyField
 from datetime import datetime
 from web.config import config
+from web.helpers import get_from_env
 import types
 import os
 import importlib
 
 database = PostgresqlDatabase('chatdb', 
-							  user = os.environ.get(config.get('db_username')),
-							  password = os.environ.get(config.get('db_password')),
+							  user = get_from_env('db_username'),
+							  password = get_from_env('db_password'),
 							  host='localhost'
 							  )
 
-user_placeholder = os.environ.get(config.get('user_placeholder'))
-conversation_placeholder = os.environ.get(config.get('conversation_placeholder'))
-message_functions_module = importlib.import_module(os.environ.get(config.get('message_functions_module')))
+user_placeholder = get_from_env('user_placeholder')
+conversation_placeholder = get_from_env('conversation_placeholder')
+message_functions_module = importlib.import_module(get_from_env('message_functions_module'))
 
 class BaseModel(Model):
 	class Meta:

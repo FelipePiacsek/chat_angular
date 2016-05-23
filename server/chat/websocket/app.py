@@ -1,19 +1,27 @@
 from tornado.options import define, options
-import tornado.ioloop
-import tornado.web
 from websocket.websocket import ChatHandler
+from web.config import config
+from web.helpers import get_from_env
+from tornado.ioloop import IOLoop
+from tornado.wsgi import WSGIContainer
+from tornado.web import FallbackHandler
+from tornado.httpserver import HTTPServer
+from app import app as chat_app
+import tornado.web
 import os
 
-def start_websocket_app():
 
-	define('port',default=os.environ.get(config.get('chat_websocket_port')))
+http_server = HTTPServer(WSGIContainer(chat_app))
+http_server.listen(get_from_env('server_port'))
 
-	app = tornado.web.Application([
-		(r'/'+os.environ.get(confi.get('chat_uri')), ChatHandler),
-	])
+# tr = WSGIContainer(chat_app)
 
-	app.listen(options.port)
+define('port',default=get_from_env('chat_websocket_port'))
 
-	tornado.ioloop.IOLoop.instance().start()
+app = tornado.web.Application([
+	(r'/'+get_from_env('chat_uri'), ChatHandler)
+])
 
-	return app
+app.listen(options.port)
+
+IOLoop.instance().start()

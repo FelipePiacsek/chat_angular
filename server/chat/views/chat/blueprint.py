@@ -31,3 +31,7 @@ def get_conversation_data(conversation_id):
 	messages = Message.select(Message.text, Message.ts, Message.conversation_party).where(Message.conversation_party << cps).dicts()
 	return new_message_tab_data(cps, messages)
 
+@chat.route('/')
+def home():
+	return 'home'
+
