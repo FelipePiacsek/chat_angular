@@ -2,13 +2,13 @@
   "name": "chat",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "^1.4.0",
-    "bootstrap": "^3.2.0",
-    "angular-animate": "^1.4.0",
-    "angular-resource": "^1.4.0",
-    "angular-route": "^1.4.0",
-    "angular-sanitize": "^1.4.0",
-    "alertify.js": "^0.3.11"
+    "angular-socket-io": "^0.7.0",
+    "components-font-awesome": "^4.6.3",
+    "bootstrap": "^3.3.6",
+    "angular-sanitize": "^1.5.5",
+    "angular-mocks": "^1.5.5",
+    "angular-route": "^1.5.5",
+    "angular-resource": "^1.5.5"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0"
@@ -23,5 +23,20 @@
         "dist/js/bootstrap.js"
       ]
     }
-  }
+  },
+  "homepage": "https://github.com/FelipePiacsek/chat_angular",
+  "authors": [
+    "Felipe <felipe.piacsek@gmail.com>"
+  ],
+  "description": "chat",
+  "main": "",
+  "license": "FDTE",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
 }
