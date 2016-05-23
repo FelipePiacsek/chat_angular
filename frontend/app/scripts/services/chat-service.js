@@ -40,12 +40,7 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 
 	this.sendMessage = function(message){
 		console.log(message);
-		return;
-		var endpoint = "/conversations/" + currentConversationId + "/";
-	    HTTPService.requests(endpoint).post(message).$promise.then(function(response) {
-	    }, function(promise) {
-	        CallbackUtils.mostrarErros(promise);
-	    });
+		ChatSocket.sendMessage(message);
 	};
 
 });
