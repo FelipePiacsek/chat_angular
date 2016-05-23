@@ -4,6 +4,5 @@ config = {'db_username': 'CHAT_DB_USER',
 		  'user_placeholder': 'USER_PICTURE_PLACEHOLDER',
 		  'conversation_placeholder': 'CONVERSATION_PICTURE_PLACEHOLDER',
 		  'message_functions_module': 'MESSAGE_FUNCTIONS_MODULE',
-		  'chat_websocket_port': 'CHAT_WEBSOCKET_PORT',
 		  'chat_uri': 'CHAT_URI',
 		  'server_port': 'SERVER_PORT'}

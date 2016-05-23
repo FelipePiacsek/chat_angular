@@ -11,15 +11,13 @@ import tornado.web
 import os
 
 
-http_server = HTTPServer(WSGIContainer(chat_app))
-http_server.listen(get_from_env('server_port'))
+tr = WSGIContainer(chat_app)
 
-# tr = WSGIContainer(chat_app)
-
-define('port',default=get_from_env('chat_websocket_port'))
+define('port',default=get_from_env('server_port'))
 
 app = tornado.web.Application([
-	(r'/'+get_from_env('chat_uri'), ChatHandler)
+	(r'/'+get_from_env('chat_uri'), ChatHandler),
+	(r'.*', FallbackHandler, dict(fallback=tr))
 ])
 
 app.listen(options.port)
