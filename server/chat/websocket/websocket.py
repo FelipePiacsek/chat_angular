@@ -3,6 +3,9 @@ from websocket.helpers import save_message
 
 class ChatHandler(WebSocketHandler):
     
+	def check_origin(self, origin):
+		return True
+
 	def open(self):
 		print('ChatHandler opened')
 
@@ -16,6 +19,8 @@ class ChatHandler(WebSocketHandler):
 				raise ValueError(error_msg) 
 			m = save_message(type_name, args, file)
 			# send_message_to_redis(m) if m else return
+		else:
+			raise ValueError('Received null message')
 
 	def on_close(self):
 		pass
