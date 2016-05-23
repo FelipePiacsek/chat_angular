@@ -28,4 +28,5 @@ angular.module('chatApp').service('Environment',  function(){
 		return endpoint;
 	};
 
+
 });

@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').service('ChatService',  function(HTTPService, CallbackUtils){
+angular.module('chatApp').service('ChatService',  function(HTTPService, CallbackUtils, ChatSocket){
 
 	var currentConversationId = null;
 

@@ -9,6 +9,9 @@ angular.module('chatApp').service('CallbackUtils',  function(){
 		if(!caminhoParaMensagem){
 			caminhoParaMensagem = caminhoPadraoParaMensagem;
 		}
+		if(promise.status === -1){
+			return null;
+		}
 		var split = caminhoParaMensagem.split('.');
 		for(var j = 0; j < split.length; j++){
 			promise = promise[split[j]];
@@ -16,18 +19,23 @@ angular.module('chatApp').service('CallbackUtils',  function(){
 		return promise;
 	};
 
+	var mostrarMensagem = function(mensagem){
+		//alertify.error(mensagem);
+		alert(mensagem);
+	};
+
 	var exibirMensagemGenerica = function(){
-		alertify.error(mensagemGenerica);
+		mostrarMensagem(mensagemGenerica);
 	};
 
 	var exibirMultiplasMensagens = function(mensagens){
 		for(var i = 0; i < mensagens.length; i++) {
-			alertify.error(mensagens[i]);
+			mostrarMensagem(mensagens[i]);
 		}
 	};
 
 	var exibirMensagemUnica = function(mensagem){
-		alertify.error(mensagem);
+		mostrarMensagem(mensagem);
 	};
 
 	this.setMensagemGenerica = function(mensagem){

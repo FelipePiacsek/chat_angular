@@ -10,9 +10,9 @@
  */
 angular
   .module('chatApp', [
-    'ngAnimate',
     'ngResource',
     'ngRoute',
+    'btford.socket-io',
     'ngSanitize'
   ])
   .config(function ($routeProvider) {
@@ -30,4 +30,9 @@ angular
       .otherwise({
         redirectTo: '/'
       });
+  }).
+  factory('ChatSocket', function (socketFactory) {
+   var mySocket = socketFactory();
+   mySocket.forward('error');
+   return mySocket;
   });
