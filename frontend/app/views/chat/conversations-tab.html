@@ -1,4 +1,8 @@
-<div class="list-group stretched">
+<div class="list-group stretched inline align-top">
+	<div class="panel-heading">
+       <h3 class="panel-title">Conversations</h3>
+    </div>
+    <br>
 	<div class="list-group-item cursor-pointer inline" ng-click="selectConversation(c)" ng-repeat="c in conversations" ng-class="selectedConversation.id === c.id ? 'active' : ''">
 			<div class="conversation-picture-box">
 				<img class="conversation-picture" ng-src="{{c.picture}}">

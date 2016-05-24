@@ -83,11 +83,7 @@ body {
   width: 70px;
 }
 .stretched{
-  width: 700px;
-}
-.tall{
-  height: 100%;
-  overflow-y: scroll;
+  width: 570px;
 }
 .conversation-picture-box{
   float: left;
@@ -104,17 +100,22 @@ body {
   float: right;
   width: 470px; 
 }
-.messages-box{
-  float: right;
-  width: 800px; 
-}
 .message-input{
   float: left;
-  width: 85%;
+  width: 91.5%;
 }
 .message-send-button{
   float: left;
   margin-left: 3px;
+}
+.wide{
+  width: 2000px;
+}
+.messages-tab{
+  width: 1200px; 
+}
+.align-top{
+  vertical-align: top;
 }
 .
 /* Responsive: Portrait tablets and up */
