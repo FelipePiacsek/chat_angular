@@ -15,7 +15,7 @@ angular.module('chatApp').directive('conversationsTab', ['ChatService', function
 
 			scope.selectConversation = function(c){
 				scope.selectedConversation = c;
-				ChatService.setCurrentConversationId(c.id);
+				ChatService.setCurrentConversationId(c);
 			};
 
 			var initController = function() {

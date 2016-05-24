@@ -5,12 +5,24 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 
 	var messagesReceivedCallback = null;
 
+	var newMessageCallback = null;
+
 	var conversationsReceivedCallback = null;
 
-	var loadMessages = function(){
-		var endpoint = "/conversations/" + currentConversationId + "/";
+	var conversations = {};
+
+	ChatSocket.onMessage(function(message) {
+        console.log(message);
+    });
+
+	var loadMessages = function(conversation){
+		var endpoint = "/conversations/" + currentConversationId + "/messages/";
 	    HTTPService.requests(endpoint).get().$promise.then(function(response) {
 	    	messagesReceivedCallback(response)
+	    	conversations[currentConversationId] = {};
+	    	conversations[currentConversationId].metadata = {};
+	    	conversations[currentConversationId].metadata.type = conversation.type;
+	    	conversations[currentConversationId].messages = [];
 	    }, function(promise) {
 	        CallbackUtils.mostrarErros(promise);
 	    });
@@ -25,8 +37,13 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	    });
 	};
 
-	this.setCurrentConversationId = function (id){
-		currentConversationId = id;
+	this.setCurrentConversationId = function (conversation){
+		currentConversationId = conversation.id;
+		if(!conversations[currentConversationId]){
+			loadMessages(conversation);
+		}else{
+			messagesReceivedCallback(conversations[currentConversationId].messages);
+		}
 	};
 
 	this.setMessagesReceivedCallback = function (callback){
@@ -41,7 +58,7 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	this.sendTextMessage = function(text){
 		var message = MessageFactory.buildTextMessage(text, currentConversationId);
 		console.log(message);
-		ChatSocket.sendMessage(message);
+		ChatSocket.send(message);
 	};
 
 });
