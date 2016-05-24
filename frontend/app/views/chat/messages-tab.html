@@ -1,2 +1,34 @@
-<form class="inline stretched">
-</form>
+<div class="chat-messages">
+	<div class="container">
+	    <div class="col-md-12 col-lg-9">
+	        <div class="panel">
+
+	    		<!--Widget body-->
+	    		<div id="demo-chat-body" class="collapse in">
+	    			<div class="nano has-scrollbar" style="height:380px">
+	    				<div class="nano-content pad-all" tabindex="0" style="right: -17px;">
+	    					<ul class="list-unstyled media-block">
+								<li class="mar-btm" ng-repeat="message in messages">
+	    							<div ng-class="isMine(message) ? 'media-right' : 'media-left'" ng-if="isMine(message)">
+	    								<img ng-src="{{message.sender.picture}}" ng-if="message.number_of_conversationees > 2">
+	    							</div>
+	    							<div class="media-body pad-hor" ng-class="isMine(message) ? 'speech-right' : 'speech-left'">
+	    								<div class="speech">
+	    									<p class="media-heading">{{message.sender.name}}</p>
+	    									<p ng-if="message.type==='common_text'">{{message.content}}</p>
+	    									<p class="speech-time">
+	    										<i class="fa fa-clock-o fa-fw"></i> {{message.ts | date : 'hh:MM'}}
+	    									</p>
+	    								</div>
+	    							</div>
+    							</li>
+
+	    					</ul>
+	    				</div>
+	    			<div class="nano-pane"><div class="nano-slider" style="height: 141px; transform: translate(0px, 0px);"></div></div></div>
+
+	    		</div>
+	    	</div>
+	    </div>
+	</div>
+</div>

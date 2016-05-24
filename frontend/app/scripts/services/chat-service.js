@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').service('ChatService',  function(HTTPService, CallbackUtils, ChatSocket){
+angular.module('chatApp').service('ChatService',  function(HTTPService, CallbackUtils, ChatSocket, MessageFactory){
 
 	var currentConversationId = null;
 
@@ -38,7 +38,8 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 		loadConversationsList();
 	};
 
-	this.sendMessage = function(message){
+	this.sendTextMessage = function(text){
+		var message = MessageFactory.buildTextMessage(text, currentConversationId);
 		console.log(message);
 		ChatSocket.sendMessage(message);
 	};
