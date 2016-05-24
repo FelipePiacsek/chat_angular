@@ -5,4 +5,7 @@ config = {'db_username': 'CHAT_DB_USER',
 		  'conversation_placeholder': 'CONVERSATION_PICTURE_PLACEHOLDER',
 		  'message_functions_module': 'MESSAGE_FUNCTIONS_MODULE',
 		  'chat_uri': 'CHAT_URI',
-		  'server_port': 'SERVER_PORT'}
+		  'server_path': 'SERVER_PATH',
+		  'angular_path': 'ANGULAR_PATH',
+		  'chat_channel': 'CHAT_CHANNEL',
+		  'redis_url':'REDIS_URL'}

@@ -2,6 +2,11 @@ Flask==0.10.1
 Jinja2==2.8
 MarkupSafe==0.23
 Werkzeug==0.11.9
+backports-abc==0.4
+gevent==1.1.1
+greenlet==0.4.9
 itsdangerous==0.24
 peewee==2.8.1
 psycopg2==2.6.1
+redis==2.10.5
+tornado==4.3

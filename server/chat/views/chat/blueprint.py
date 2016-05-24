@@ -2,6 +2,7 @@ from flask import Blueprint
 import json
 from models import Conversation, ConversationParty, User, Message
 from web.helpers import datetime_to_string
+from web.messages import save_message
 from views.chat.helpers import new_conversation_tab_data, new_message_tab_data
 from peewee import fn
 

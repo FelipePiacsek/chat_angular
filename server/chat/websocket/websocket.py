@@ -1,29 +1,38 @@
 from tornado.websocket import WebSocketHandler
-from websocket.helpers import save_message
+from web.messages import save_message
+from web.helpers import get_from_env
+from web.chat_backend import chat_backend
+import re
+import json
 
 class ChatHandler(WebSocketHandler):
-    
-	def check_origin(self, origin):
-		return True
 
-	def open(self):
-		print('ChatHandler opened')
+	def __init__(self, *args, **kwargs):
+		super(ChatHandler, self).__init__(*args, **kwargs)
+		self.user_id = None
+
+	def check_origin(self, origin):
+		return True # change in production
+
+	def open(self, *args, **kwargs):
+		print('Opening chat handler')
+		user_id = 1
+		if user_id:
+			self.user_id = user_id
+			chat_backend.subscribe_user(self)
+		else:
+			raise ValueError('Websocket must provide user id on open')
 
 	def on_message(self, message):
 		if message:
-			type_name = message.type_name if message.type_name else None
-			args = message.args if message.args else None
-			file = message.file if message.file else None
-			if not type_name or not args:
-				error_msg = 'Invalid message with values \n typename:\t{} \n args:\t{}'.format(type_name, args)
-				raise ValueError(error_msg) 
-			m = save_message(type_name, args, file)
-			# send_message_to_redis(m) if m else return
+			message_json = json.loads(message)
+			m = save_message(message_json)
+			chat_backend.send_message_to_redis(m)
 		else:
 			raise ValueError('Received null message')
 
 	def on_close(self):
-		pass
+		chat_backend.unsubscribe_user(self)
 
 
 

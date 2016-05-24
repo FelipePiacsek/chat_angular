@@ -27,7 +27,6 @@ class User(BaseModel):
 	picture = CharField(null = True, default = user_placeholder)
 	created_at = DateTimeField(default = datetime.now)
 
-
 	def get_name(self):
 		return self.first_name + ' ' + self.last_name if self.first_name and self.last_name else self.username
 

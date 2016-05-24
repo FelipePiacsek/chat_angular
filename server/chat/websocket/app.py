@@ -1,3 +1,5 @@
+from gevent import monkey
+monkey.patch_all()
 from tornado.options import define, options
 from websocket.websocket import ChatHandler
 from web.config import config
@@ -13,13 +15,13 @@ import os
 
 tr = WSGIContainer(chat_app)
 
-define('port',default=get_from_env('server_port'))
+define('port',default=get_from_env('server_path').split(':')[1])
 
 app = tornado.web.Application([
 	(r'/'+get_from_env('chat_uri'), ChatHandler),
 	(r'.*', FallbackHandler, dict(fallback=tr))
 ])
 
-app.listen(options.port)
-
-IOLoop.instance().start()
+if __name__ == '__main__':
+	app.listen(options.port)
+	IOLoop.instance().start()
