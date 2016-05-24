@@ -1,4 +1,5 @@
 from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, DateTimeField, TextField, ForeignKeyField
+from flask.ext.security import UserMixin, RoleMixin
 from datetime import datetime
 from web.config import config
 from web.helpers import get_from_env
@@ -20,7 +21,11 @@ class BaseModel(Model):
 	class Meta:
 		database = database
 
-class User(BaseModel):
+class Role(BaseModel, RoleMixin):
+	name = CharField(unique = True)
+	description = TextField(null = True)
+
+class User(BaseModel, UserMixin):
 	username = CharField()
 	first_name = CharField(null = True)
 	last_name = CharField(null = True)
@@ -30,15 +35,25 @@ class User(BaseModel):
 	def get_name(self):
 		return self.first_name + ' ' + self.last_name if self.first_name and self.last_name else self.username
 
-class Conversation(BaseModel):
+class UserRoles(BaseModel):
+	user = ForeignKeyField(User)
+	role = ForeignKeyField(Role)
+	name = property(lambda self: self.role.name)
+	description = property(lambda self: self.role.description)
+
+class ConversationType(BaseModel):
 	name = CharField()
-	picture = CharField(null = True, default = conversation_placeholder)
+
+class Conversation(BaseModel):
+	conversation_type = ForeignKeyField(ConversationType)
+	name = CharField()
 
 class ConversationParty(BaseModel):
 	conversation = ForeignKeyField(Conversation)
 	user = ForeignKeyField(User)
 	last_message = CharField(default = 'no messages')
 	last_message_ts = DateTimeField()
+	picture = CharField(null = True, default = conversation_placeholder)
 	
 class MessageType(BaseModel):
 	name = CharField()

@@ -3,6 +3,8 @@ from datetime import datetime
 from web.helpers import datetime_to_string
 import json
 
+GET_ERROR_MESSAGE = 'Invalid User ID / Conversation ID / Conversation Party ID combination'
+
 def save_message(message):
 	type_name = message.get('type_name')
 	args = message.get('args')
@@ -42,3 +44,31 @@ def save_message(message):
 		message_object = json.dumps(message_object)
 
 	return message_object
+
+def get_messages(user_id, conversation_id=None, conversation_party_id=None):
+	try:
+		messages = None
+		if conversation_id:
+			cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
+			messages = Message.select().where(Message.conversation_party << cps)
+		elif conversation_party_id:
+			messages = Message.select().where(Message.ConversationParty == conversation_party_id)
+		user = User.select().where(User.id == user_id).first()
+		r = __jsonify_messages(messages, user)
+		return r
+	except Exception as e:
+		return GET_ERROR_MESSAGE
+
+def __jsonify_messages(messages, user):
+	json_list = []	
+	if messages and hasattr(messages, '__iter__') and user:
+		for message in messages:
+			m = {"type_name": message.message_type.name if message.message_type and message.message_type.name else '',
+				 "content": message.content if message.content else '',
+				 "sender": {"name": user.get_name(),
+				 			"id": user.id if user.id else '',
+				 			"picture": user.picture if user.picture else ''},
+				 "ts": datetime_to_string(message.ts) if message.ts else ''
+				}
+			json_list.append(m)
+	return json_list

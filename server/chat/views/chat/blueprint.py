@@ -2,9 +2,8 @@ from flask import Blueprint
 import json
 from models import Conversation, ConversationParty, User, Message
 from web.helpers import datetime_to_string
-from web.messages import save_message
-from views.chat.helpers import new_conversation_tab_data, new_message_tab_data
-from peewee import fn
+from web.messages import save_message, get_messages
+from web.conversations import get_conversations
 
 chat = Blueprint('chat', __name__)
 
@@ -15,22 +14,18 @@ def add_header(r):
 
 @chat.route('/conversations')
 def get_conversations_tab_data():
-	q = ConversationParty.select(fn.Max(ConversationParty.last_message_ts)).group_by(ConversationParty.conversation)
-	cps = ConversationParty.select().where(ConversationParty.last_message_ts << q)
-	return json.dumps({'conversations': [new_conversation_tab_data(cp) for cp in cps]})
+	c = get_conversations()
+	return json.dumps({'conversations': c})
 
 
-@chat.route('/conversation/<conversation_id>')
+@chat.route('/conversations/<conversation_id>')
 def get_conversation_tab_data(conversation_id):
-	cp = ConversationParty.select().first()
-	return new_conversation_tab_data(cp)
+	return json.dumps({'conversation': get_conversations(conversation_id=conversation_id)})
 
 
-@chat.route('/message_tab/<conversation_id>')
+@chat.route('/conversations/<conversation_id>/messages')
 def get_conversation_data(conversation_id):
-	cps = ConversationParty.select(ConversationParty.id, ConversationParty.conversation).where(ConversationParty.conversation==conversation_id)
-	messages = Message.select(Message.text, Message.ts, Message.conversation_party).where(Message.conversation_party << cps).dicts()
-	return new_message_tab_data(cps, messages)
+	return json.dumps({'messages':get_messages(user_id=1, conversation_id=conversation_id)})
 
 @chat.route('/')
 def home():

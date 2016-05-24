@@ -6,7 +6,7 @@ messages = []
 num_msgs = 10
 
 cs = Conversation.select()
-mt_text = MessageType.get(MessageType.name=='text')
+mt_text = MessageType.get(MessageType.name=='common_text')
 
 for c in cs:
 	
@@ -23,7 +23,11 @@ for c in cs:
 			messages.append(m)
 
 with database.transaction():
+	i = 0
 	for m in messages:
 		m.save()
-		m.run_constructor('this is sample text ' + str(i) + ' from ' + cp.user.get_name())
+		args = dict()
+		args['text'] = 'this is sample text {} from {}'.format(str(i), cp.user.get_name())
+		m.run_constructor(args)
 		m.save()
+		i+=1
