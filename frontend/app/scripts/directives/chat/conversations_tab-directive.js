@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').directive('conversationsTab', ['ChatService', function(ChatService) {
+angular.module('chatApp').directive('conversationsTab', function(ChatService, ArrayUtils) {
 
 	return {
 		restrict: 'E',
@@ -13,17 +13,30 @@ angular.module('chatApp').directive('conversationsTab', ['ChatService', function
 				scope.selectConversation(scope.conversations[0]);
 			};
 
+			var callbackNotification = function(notification){
+				c = ArrayUtils.findById(conversations, notification.data.conversation_id);
+				if (scope.selectConversation.id !== notification.data.conversation_id){
+					if(!c.number_of_unread_messages){
+						c.number_of_unread_messages = 0;
+					}
+					c.number_of_unread_messages = c.number_of_unread_messages + 1;
+				}
+				c.last_message = notification.data.message;
+			};
+
 			scope.selectConversation = function(c){
 				scope.selectedConversation = c;
+				c.number_of_unread_messages = 0;
 				ChatService.setCurrentConversationId(c);
 			};
 
 			var initController = function() {
-				ChatService.setConversationsReceivedCallback(callbackConversations);
+				ChatService.addConversationsReceivedCallback(callbackConversations);
+				ChatService.addNewMessageCallback(callbackConversations);
 			};
 			initController();			
 		}
 	};
 
 
-}]);
+});

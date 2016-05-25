@@ -56,6 +56,9 @@ body {
 .pull-right{
   float: right;
 }
+.align-top{
+  vertical-align: top;
+}
 /* Supporting marketing content */
 .marketing {
   margin: 40px 0;

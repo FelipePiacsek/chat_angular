@@ -29,6 +29,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.messages-tab{
+    width: 1200px;
+}
 .panel-control>.btn:last-child, .panel-control>.btn-group:last-child>.btn:first-child {
     border-bottom-right-radius: 0;
 }
