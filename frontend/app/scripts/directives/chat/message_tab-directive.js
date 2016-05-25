@@ -32,8 +32,8 @@ angular.module('chatApp').directive('messagesTab', ['ChatService', function(Chat
 			};
 			
 			var initController = function() {
-				ChatService.setMessagesReceivedCallback(callbackMessages);
-				scope.messages = mock();
+				ChatService.addMessagesReceivedCallback(callbackMessages);
+				//scope.messages = mock();
 			};
 			initController();	
 

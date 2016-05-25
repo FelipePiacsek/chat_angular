@@ -1,24 +1,29 @@
 'use strict';
-angular.module('chatApp').service('ChatService',  function(HTTPService, CallbackUtils, ChatSocket, MessageFactory){
+angular.module('chatApp').service('ChatService',  function(HTTPService, CallbackUtils, ConversationsSocket, MessageFactory){
 
 	var currentConversationId = null;
 
-	var messagesReceivedCallback = null;
+	var messagesReceivedCallback = [];
 
-	var newMessageCallback = null;
+	var newMessageCallback = [];
 
-	var conversationsReceivedCallback = null;
+	var conversationsReceivedCallback = [];
 
 	var conversations = {};
 
-	ChatSocket.onMessage(function(message) {
+	ConversationsSocket.onMessage(function(message) {
         console.log(message);
+    	for(var i = 0; i < newMessageCallback.length; i++){
+    		newMessageCallback[i](response);
+    	}
     });
 
 	var loadMessages = function(conversation){
 		var endpoint = "/conversations/" + currentConversationId + "/messages/";
 	    HTTPService.requests(endpoint).get().$promise.then(function(response) {
-	    	messagesReceivedCallback(response)
+	    	for(var i = 0; i < messagesReceivedCallback.length; i++){
+	    		messagesReceivedCallback[i](response);
+	    	}
 	    	conversations[currentConversationId] = {};
 	    	conversations[currentConversationId].metadata = {};
 	    	conversations[currentConversationId].metadata.type = conversation.type;
@@ -31,7 +36,9 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	var loadConversationsList = function(){
 		var endpoint = "conversations/";
 	    HTTPService.requests(endpoint).get().$promise.then(function(response) {
-	    	conversationsReceivedCallback(response)
+			for(var i = 0; i < conversationsReceivedCallback.length; i++){
+	    		conversationsReceivedCallback[i](response);
+	    	}
 	    }, function(promise) {
 	        CallbackUtils.mostrarErros(promise);
 	    });
@@ -42,23 +49,29 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 		if(!conversations[currentConversationId]){
 			loadMessages(conversation);
 		}else{
-			messagesReceivedCallback(conversations[currentConversationId].messages);
+			for(var i = 0; i < messagesReceivedCallback.length; i++){
+	    		messagesReceivedCallback[i](response);
+	    	}
 		}
 	};
 
-	this.setMessagesReceivedCallback = function (callback){
-		messagesReceivedCallback = callback;
+	this.addMessagesReceivedCallback = function (callback){
+		messagesReceivedCallback.push(callback);
 	};
 
-	this.setConversationsReceivedCallback = function (callback){
-		conversationsReceivedCallback = callback;
+	this.addNewMessageCallback = function (callback){
+		newMessageCallback.push(callback);
+	};
+
+	this.addConversationsReceivedCallback = function (callback){
+		conversationsReceivedCallback.push(callback);
 		loadConversationsList();
 	};
 
 	this.sendTextMessage = function(text){
 		var message = MessageFactory.buildTextMessage(text, currentConversationId);
 		console.log(message);
-		ChatSocket.send(message);
+		ConversationsSocket.send(message);
 	};
 
 });
