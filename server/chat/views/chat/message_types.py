@@ -1,3 +1,3 @@
 
 def common_text(args):
-	return args.get('text')
+	return args.get('text', '')

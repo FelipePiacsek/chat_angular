@@ -1,16 +1,21 @@
-from models import BaseModel, User, Conversation, ConversationParty, Message, database
+from models import BaseModel, User, Conversation, ConversationParty, ConversationType, Message, database
 from datetime import datetime
 
 # Conversations and ConversationParties
 conversations = []
 conversationparties = []
 
+ct = ConversationType()
+ct.name = 'Normal'
+
 c1 = Conversation()
 c1.name = 'Piacsek'
+c1.conversation_type = ct
 conversations.append(c1)
 
 c2 = Conversation()
 c2.name = 'Felps'
+c2.conversation_type = ct
 conversations.append(c2)
 
 cp11 = ConversationParty()
@@ -42,6 +47,7 @@ cp22.last_message_ts=datetime(2016,6,17,16,0,0)
 conversationparties.append(cp22)
 
 with database.transaction():
+	ct.save()
 	for c in conversations:
 		c.save()
 	for cp in conversationparties:
