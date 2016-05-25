@@ -9,8 +9,10 @@ def create_conversationee(user_object):
 	u.first_name = user_object.get('first_name','')
 	u.last_name = user_object.get('last_name','')
 	u.picture = user_object.get('picture', None)
-	
+
 	r = Role.get(Role.name=='conversationee')
+
+	user = None
 
 	with database.transaction():
 		user_datastore.create_user(username=u.username,
@@ -25,4 +27,4 @@ def create_conversationee(user_object):
 
 		user_datastore.add_role_to_user(user,r)
 
-	return u
+	return user

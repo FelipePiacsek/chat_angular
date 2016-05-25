@@ -6,6 +6,7 @@ from web.messages import save_message, get_message_json
 from web.conversations import get_conversation_json
 from web.users import create_conversationee
 from flask.ext.security import auth_token_required, login_required
+from playhouse.shortcuts import model_to_dict
 
 chat = Blueprint('chat', __name__)
 
@@ -38,13 +39,16 @@ def home():
 def test_user_creation():
 	try:
 		u = dict()
-		u['username'] = request.form['username']
-		u['email'] = request.form['email']
-		u['password'] = request.form['password']
-		u['first_name'] = request.form['first_name']
-		u['last_name'] = request.form['last_name']
-		u['picture'] = request.form['picture']
-	except KeyError:
-		abort(400)
-	create_conversationee(u)
-	return 'created'
+		u['username'] = request.json.get('username','')
+		u['email'] = request.json.get('email','')
+		u['password'] = request.json.get('password','')
+		u['first_name'] = request.json.get('first_name','')
+		u['last_name'] = request.json.get('last_name','')
+		u['picture'] = request.json.get('picture',None)
+		if (User.select().where(User.username==u.get('username')).first()):
+			return 'User already exists'
+		else:
+			return 'User created'
+		
+	except Exception:
+		raise Exception('Failed to create conversationee')

@@ -30,7 +30,7 @@ class Role(BaseModel, RoleMixin):
 
 class User(BaseModel, UserMixin):
 	username = CharField(unique=True)
-	email = TextField()
+	email = TextField(unique=True)
 	password = TextField()
 	first_name = CharField(null = True)
 	last_name = CharField(null = True)
