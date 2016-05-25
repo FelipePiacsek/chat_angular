@@ -27,7 +27,7 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 	    	conversations[currentConversationId] = {};
 	    	conversations[currentConversationId].metadata = {};
 	    	conversations[currentConversationId].metadata.type = conversation.type;
-	    	conversations[currentConversationId].messages = [];
+	    	conversations[currentConversationId].messages = response.messages;
 	    }, function(promise) {
 	        CallbackUtils.mostrarErros(promise);
 	    });
@@ -50,7 +50,7 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 			loadMessages(conversation);
 		}else{
 			for(var i = 0; i < messagesReceivedCallback.length; i++){
-	    		messagesReceivedCallback[i](response);
+	    		messagesReceivedCallback[i](conversations[currentConversationId]);
 	    	}
 		}
 	};
