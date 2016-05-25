@@ -4,14 +4,13 @@ from peewee import fn
 
 GET_ERROR_MESSAGE = 'Invalid Conversation ID'
 
-def get_conversations(conversation_id=None):
+def get_conversation_json(conversation_id=None):
 	try:
 		if conversation_id:
 			conversations = Conversation.select().where(Conversation.id == conversation_id).first()
 		else:
 			conversations = Conversation.select()
-		r = __jsonify_conversations(conversations)
-		return r
+		return __jsonify_conversations(conversations)
 	except Exception as e:
 		return GET_ERROR_MESSAGE
 
@@ -33,10 +32,15 @@ def __jsonify_conversations(conversations):
 					
 
 def __jsonify_one_conversation(conversation, conversation_party):
-	c = {"id": conversation.id if conversation and conversation.id else '',
-		 "name": conversation.name if conversation and conversation.name else '',
-		 "last_message":{"date": datetime_to_string(conversation_party.last_message_ts) if conversation_party and conversation_party.last_message_ts else '',
-		 				 "text": conversation_party.last_message if conversation_party and conversation_party.last_message else ''
-						}		
-		}
+
+	c = dict()
+	lm = dict()
+
+	lm['date'] = datetime_to_string(conversation_party.last_message_ts) if conversation_party and conversation_party.last_message_ts else ''
+	lm['text'] = conversation_party.last_message if conversation_party and conversation_party.last_message else ''
+
+	c['id'] = conversation.id if conversation else ''
+	c['name'] = conversation.name if conversation and conversation.name else ''
+	c['last_message'] = lm
+
 	return c
