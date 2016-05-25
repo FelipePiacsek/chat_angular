@@ -26,18 +26,17 @@ def save_message(message):
 
 	m = Message()
 
-	with database.transaction():								  
-		m.conversation_party = myself
-		m.message_type = mt
-		m.ts = datetime.now()
-		m.file = file
-		m.save()
-		m.run_constructor(args)
-		m.save()
-
 	try:
-		x = get_message_json(u.id, message_object=m)
-		message_object = json.loads(x)
+		with database.transaction():								  
+			m.conversation_party = myself
+			m.message_type = mt
+			m.ts = datetime.now()
+			m.file = file
+			m.save()
+			m.run_constructor(args)
+			m.save()
+
+		message_object = get_message_json(u.id, message_object=m)
 		message_object['recipient_ids'] = [cp.id for cp in cps]
 		return json.dumps(message_object)
 	except Exception as e:
@@ -53,21 +52,24 @@ def get_message_json(user_id, conversation_id=None, conversation_party_id=None, 
 			messages = Message.select().where(Message.ConversationParty == conversation_party_id)
 		elif message_object:
 			messages = message_object
+
 		user = User.select().where(User.id == user_id).first()
 		return __jsonify_messages(user, messages)
 	except Exception as e:
 		return GET_ERROR_MESSAGE
 
 def __jsonify_messages(user, messages):
-	json_list = []	
 	if messages and hasattr(messages, '__iter__') and user:
+		json_list = []
 		for message in messages:
 			json_list.append(__jsonify_one_message(user, message))
 		return json_list
 	else:
-		return __jsonify_one_message(messages)
+		return __jsonify_one_message(user, messages)
 
 def __jsonify_one_message(user, message):
+
+	print('hi!')
 
 	m = dict()
 	s = dict()
