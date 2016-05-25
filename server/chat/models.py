@@ -1,5 +1,5 @@
-from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, DateTimeField, TextField, ForeignKeyField
-from flask.ext.security import UserMixin, RoleMixin
+from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, BooleanField, DateTimeField, TextField, ForeignKeyField
+from flask.ext.security import UserMixin, RoleMixin, PeeweeUserDatastore
 from datetime import datetime
 from web.config import config
 from web.helpers import get_from_env
@@ -21,50 +21,52 @@ class BaseModel(Model):
 	class Meta:
 		database = database
 
+class Photo(BaseModel):
+	url = TextField()
+
 class Role(BaseModel, RoleMixin):
 	name = CharField(unique = True)
 	description = TextField(null = True)
 
 class User(BaseModel, UserMixin):
-	username = CharField()
+	username = CharField(unique=True)
+	email = TextField()
+	password = TextField()
 	first_name = CharField(null = True)
 	last_name = CharField(null = True)
-	picture = CharField(null = True, default = user_placeholder)
+	picture = ForeignKeyField(Photo, null=True)
 	created_at = DateTimeField(default = datetime.now)
+	active = BooleanField()
 
 	def get_name(self):
 		return self.first_name + ' ' + self.last_name if self.first_name and self.last_name else self.username
 
 class UserRoles(BaseModel):
-	user = ForeignKeyField(User)
-	role = ForeignKeyField(Role)
+	user = ForeignKeyField(User, related_name='roles')
+	role = ForeignKeyField(Role, related_name='users')
 	name = property(lambda self: self.role.name)
 	description = property(lambda self: self.role.description)
 
-class ConversationType(BaseModel):
-	name = CharField()
-
-class Conversation(BaseModel):
-	conversation_type = ForeignKeyField(ConversationType)
-	name = CharField()
-
-class ConversationParty(BaseModel):
-	conversation = ForeignKeyField(Conversation)
-	user = ForeignKeyField(User)
-	last_message = CharField(default = 'no messages')
-	last_message_ts = DateTimeField()
-	picture = CharField(null = True, default = conversation_placeholder)
-	
 class MessageType(BaseModel):
 	name = CharField()
 	constructor = CharField()
 
+class ConversationType(BaseModel):
+	name = CharField()
+
+DeferredLastMessage = DeferredRelation()
+
+class Conversation(BaseModel):
+	conversation_type = ForeignKeyField(ConversationType)
+	last_message = ForeignKeyField(DeferredLastMessage, null=True)
+	name = CharField()
+	file = CharField(null = True)
+
 class Message(BaseModel):
-	conversation_party = ForeignKeyField(ConversationParty)
 	message_type = ForeignKeyField(MessageType)
+	conversation = ForeignKeyField(Conversation)
 	content = TextField(null = True)
 	ts = DateTimeField()
-	file = CharField(null = True)
 
 	def run_constructor(self, args):
 		callback = getattr(message_functions_module, self.message_type.constructor)
@@ -74,6 +76,17 @@ class Message(BaseModel):
 				return self.content
 			except Exception:
 				raise Exception('Found no valid constructor for message type.')
+
+DeferredLastMessage.set_model(Message)
+
+class ConversationParty(BaseModel):
+	conversation = ForeignKeyField(Conversation)
+	last_read_message = ForeignKeyField(Message, null=True)
+	user = ForeignKeyField(User)
+	picture = ForeignKeyField(Photo, null=True)
+
+
+user_datastore = PeeweeUserDatastore(database, User, Role, UserRoles)
 
 
 

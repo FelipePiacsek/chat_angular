@@ -69,8 +69,6 @@ def __jsonify_messages(user, messages):
 
 def __jsonify_one_message(user, message):
 
-	print('hi!')
-
 	m = dict()
 	s = dict()
 

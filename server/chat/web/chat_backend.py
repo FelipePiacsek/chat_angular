@@ -55,7 +55,7 @@ class ChatBackend(object):
 		try:
 			client.write_message(message)
 		except Exception:
-			print('Couldn\'t send chat message to client')
+			raise Exception('Couldn\'t send chat message to client')
 
 chat_backend = ChatBackend()
 chat_backend.start()

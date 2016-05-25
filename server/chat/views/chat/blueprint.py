@@ -1,9 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, request
 import json
-from models import Conversation, ConversationParty, User, Message
+from models import Conversation, ConversationParty, User, Role, UserRoles, Message, user_datastore
 from web.helpers import datetime_to_string
 from web.messages import save_message, get_message_json
 from web.conversations import get_conversation_json
+from web.users import create_conversationee
+from flask.ext.security import auth_token_required, login_required
 
 chat = Blueprint('chat', __name__)
 
@@ -13,6 +15,7 @@ def add_header(r):
 	return r
 
 @chat.route('/conversations')
+@login_required
 def get_conversations_tab_data():
 	c = get_conversation_json()
 	return json.dumps({'conversations': c})
@@ -31,3 +34,17 @@ def get_conversation_data(conversation_id):
 def home():
 	return 'home'
 
+@chat.route('/create_user', methods=['POST'])
+def test_user_creation():
+	try:
+		u = dict()
+		u['username'] = request.form['username']
+		u['email'] = request.form['email']
+		u['password'] = request.form['password']
+		u['first_name'] = request.form['first_name']
+		u['last_name'] = request.form['last_name']
+		u['picture'] = request.form['picture']
+	except KeyError:
+		abort(400)
+	create_conversationee(u)
+	return 'created'
