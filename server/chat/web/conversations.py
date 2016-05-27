@@ -2,12 +2,9 @@ from models import Conversation, ConversationParty, database
 from web.helpers import datetime_to_string
 from peewee import fn
 
-def update_conversation(conversation_id, last_message=None, name=None)
+def update_conversation(conversation_id, last_message=None, name=None):
 	
-	Conversation.update(last_message=last_message,
-						name=name)
-				.where(Conversation.id==conversation_id)
-				.execute()
+	Conversation.update(last_message=last_message, name=name).where(Conversation.id==conversation_id).execute()
 
 
 def get_conversation_json(conversation_id=None):
