@@ -1,6 +1,5 @@
 from flask import Blueprint, request
 from flask.ext.cors import cross_origin
-import json
 from models import Conversation, ConversationParty, User, Role, UserRoles, Message, user_datastore
 from web.helpers import datetime_to_string, dump_error, return_response
 from web.messages import save_message, get_message_json
@@ -8,6 +7,8 @@ from web.conversations import get_conversation_json
 from web.users import create_conversationee
 from flask.ext.security import auth_token_required, login_required
 from playhouse.shortcuts import model_to_dict
+from views.chat.exceptions import UserAlreadyExistsException
+import json
 
 
 chat = Blueprint('chat', __name__)
