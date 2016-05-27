@@ -7,14 +7,16 @@
  * # MainCtrl
  * Controller of the chatApp
  */
-angular.module('chatApp').controller('MainCtrl', function ($scope, $state, HTTPService, CallbackUtils, UserData) {
+angular.module('chatApp').controller('MainCtrl', function ($scope, $state, HTTPService, CallbackUtils, UserData, ConversationsSocket) {
 
     $scope.login = function(){
     	var login = {};
     	login.email = $scope.email;
     	login.password = $scope.password;
     	HTTPService.requests('/login').post(login, function (data, responseHeaders) {
-            UserData.setId(parseInt(data.response.user.id));
+    		var id = parseInt(data.response.user.id);
+            UserData.setId(id);
+            ConversationsSocket.connect(id);
             $state.go("chat");
         }, function (promise) {
             CallbackUtils.mostrarErros(promise);
@@ -44,5 +46,5 @@ angular.module('chatApp').controller('MainCtrl', function ($scope, $state, HTTPS
 		}
 	};
 	initController();
-	
+
 });

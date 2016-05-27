@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').service('MessageFactory',  function(UserData){
+angular.module('chatApp').service('MessageFactory',  function(){
 
 	this.buildTextMessage = function(text, currentConversationId){
 		var message = {};
@@ -8,7 +8,6 @@ angular.module('chatApp').service('MessageFactory',  function(UserData){
 		message.type_name = "common_text";
 		message.file = null;
 		message.conversation_id = currentConversationId;
-		message.sender_id = UserData.getId();
 		return message;
 	};
 

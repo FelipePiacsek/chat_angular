@@ -8,7 +8,7 @@
  *
  * Main module of the application.
  */
-var conversationsHost = "ws://localhost:5000/chat";
+
 //var notificationsHost = "ws://localhost:5000/notifications";
 var app = angular.module('chatApp', [
     'ngStorage',
@@ -18,11 +18,7 @@ var app = angular.module('chatApp', [
     'ngSanitize'
 ]);
 
-app.factory('ConversationsSocket', function($websocket) {
-      // Open a WebSocket for the conversations.
-      var dataStream = $websocket(conversationsHost);
-      return dataStream;
-});
+
 app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
     // For any unmatched url, redirect to /
