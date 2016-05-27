@@ -6,12 +6,8 @@ angular.module('chatApp').directive('conversationsInput', ['ChatService', functi
 		templateUrl: 'views/chat/conversations-input.html',
 		link: function(scope, element, attrs){
 			scope.sendMessage = function(){
-				if(scope.message==="criar_usuario"){
-					ChatService.createUser();
-				}else{
-					ChatService.sendTextMessage(scope.message);
-					scope.message = "";
-				}
+				ChatService.sendTextMessage(scope.message);
+				scope.message = "";
 			};
 		}
 	};
