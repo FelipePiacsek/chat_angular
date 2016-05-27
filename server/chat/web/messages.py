@@ -4,8 +4,6 @@ from web.helpers import datetime_to_string
 import json
 import ast
 
-GET_ERROR_MESSAGE = 'Invalid User ID / Conversation ID / Conversation Party ID combination'
-
 def save_message(message):
 	type_name = message.get('type_name')
 	args = message.get('args')
@@ -43,20 +41,17 @@ def save_message(message):
 		raise Exception('Couldn\'t create message object')
 
 def get_message_json(user_id, conversation_id=None, conversation_party_id=None, message_object=None):
-	try:
-		messages = None
-		if conversation_id:
-			cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
-			messages = Message.select().where(Message.conversation_party << cps)
-		elif conversation_party_id:
-			messages = Message.select().where(Message.ConversationParty == conversation_party_id)
-		elif message_object:
-			messages = message_object
+	messages = None
+	if conversation_id:
+		cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
+		messages = Message.select().where(Message.conversation_party << cps)
+	elif conversation_party_id:
+		messages = Message.select().where(Message.ConversationParty == conversation_party_id)
+	elif message_object:
+		messages = message_object
 
-		user = User.select().where(User.id == user_id).first()
-		return __jsonify_messages(user, messages)
-	except Exception as e:
-		return GET_ERROR_MESSAGE
+	user = User.select().where(User.id == user_id).first()
+	return __jsonify_messages(user, messages)
 
 def __jsonify_messages(user, messages):
 	if messages and hasattr(messages, '__iter__') and user:

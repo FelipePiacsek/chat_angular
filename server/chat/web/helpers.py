@@ -1,5 +1,6 @@
 from datetime import datetime
 from web.config import config
+from flask import make_response
 import os
 
 def datetime_to_string(datetime):
@@ -13,3 +14,10 @@ def date_handler(obj):
 
 def get_from_env(var):
 	return os.environ.get(config.get(var))
+
+def dump_error(message):
+	return json.dumps({'error': message})
+
+def return_response(response, status):
+	return make_response((response, status, {'Access-Control-Allow-Origin': '*'}))
+

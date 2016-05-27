@@ -2,18 +2,13 @@ from models import Conversation, ConversationParty, database
 from web.helpers import datetime_to_string
 from peewee import fn
 
-GET_ERROR_MESSAGE = 'Invalid Conversation ID'
-
 def get_conversation_json(conversation_id=None):
-	try:
-		if conversation_id:
-			conversations = Conversation.select().where(Conversation.id == conversation_id).first()
-		else:
-			conversations = Conversation.select()
-		return __jsonify_conversations(conversations)
-	except Exception as e:
-		return GET_ERROR_MESSAGE
-
+	if conversation_id:
+		conversations = Conversation.select().where(Conversation.id == conversation_id).first()
+	else:
+		conversations = Conversation.select()
+	return __jsonify_conversations(conversations)
+	
 
 def __jsonify_conversations(conversations):
 
