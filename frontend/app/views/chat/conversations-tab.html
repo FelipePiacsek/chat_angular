@@ -1,6 +1,9 @@
 <div class="list-group stretched inline align-top">
 	<div class="panel-heading">
-       <h3 class="panel-title">Conversations</h3>
+       <h3 class="panel-title inline">Conversations
+       <button class="btn btn-default inline"><i class="fa fa-plus">&nbspNew group conversation</i></button>
+       <button class="btn btn-default inline"><i class="fa fa-plus">&nbspNew direct conversation</i></button>
+       </h3>
     </div>
     <br>
 	<div class="list-group-item cursor-pointer inline" ng-click="selectConversation(c)" ng-repeat="c in conversations" ng-class="selectedConversation.id === c.id ? 'active' : ''">

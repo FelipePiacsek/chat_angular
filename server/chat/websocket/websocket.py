@@ -15,6 +15,7 @@ class ChatHandler(WebSocketHandler):
 		return True # change in production
 
 	def open(self, *args, **kwargs):
+		#print(args[0])
 		print('Opening chat handler')
 		user_id = 1
 		if user_id:
