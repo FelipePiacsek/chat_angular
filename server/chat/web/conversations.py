@@ -27,7 +27,7 @@ def create_conversation(conversation_object):
 
 	cps = []
 
-	conversationees_list = conversation_object.get('conversationees_list',[])
+	conversationees_list = list(set(conversation_object.get('conversationees_list',[])))
 
 	for index, conversationee in conversationees_list:
 		
