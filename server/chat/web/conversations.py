@@ -7,6 +7,45 @@ def update_conversation(conversation_id, last_message=None, name=None):
 	Conversation.update(last_message=last_message, name=name).where(Conversation.id==conversation_id).execute()
 
 
+def create_conversation(conversation_object):
+
+	c['conversationees_list'] = request.json.get('conversationees_list')
+
+	ct = ConversationType()
+	ct.get(ConversationType.name == conversation_object.get('conversation_type'))
+
+	c = Conversation()
+	c.name = conversation_object.get('name','')
+	c.conversation_type = ct
+
+	p = None
+	p_name = conversation_object.get('picture','')
+	if p_name:
+		p = Picture()
+		p.url = p_name
+
+	cps = []
+
+	conversationees_list = conversation_object.get('conversationees_list',[])
+	
+	for conversationee in conversationees_list:
+		
+		cp = ConversationParty()
+		cp.conversation = c
+		cp.user = User.get(User.id==conversationee)
+		picture = p if p else None
+		cps.append(cp)
+
+	with database.transaction():
+		c.save()
+		if p:
+			p.save()
+		for cp in cps:
+			cp.save()
+
+	return __jsonify_one_conversation(c)
+
+
 def get_conversation_json(conversation_id=None):
 	
 	if conversation_id:

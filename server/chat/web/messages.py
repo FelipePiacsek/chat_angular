@@ -11,9 +11,6 @@ def save_message(message):
 	file = message.get('file', '')
 	conversation_id = message.get('conversation_id')
 	
-	if not type_name or not args or not conversation_id:
-		raise Exception('Message missing type name, arguments or conversation id')
-	
 	mt = MessageType.select().where(MessageType.name == type_name).first()
 	u = User.select().where(User.id == 1).first()
 	cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
@@ -21,7 +18,7 @@ def save_message(message):
 	number_of_conversationees = cps.count()
 
 	if not mt or not u or not cps or not number_of_conversationees:
-		raise Exception('Could\'nt save the message: invalid message data')
+		raise InvalidMessageData('Couldn\'t save message: invalid message data')
 
 	m = Message()
 
@@ -41,6 +38,7 @@ def save_message(message):
 		message_object = get_message_json(u.id, message_object=m)
 		message_object['recipient_ids'] = [cp.id for cp in cps]
 		return json.dumps(message_object)
+
 	except Exception as e:
 		raise Exception('Couldn\'t create message object')
 

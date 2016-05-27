@@ -3,13 +3,12 @@ from flask.ext.cors import cross_origin
 from models import Conversation, ConversationParty, User, Role, UserRoles, Message, user_datastore
 from web.helpers import datetime_to_string, dump_error, return_response
 from web.messages import save_message, get_message_json
-from web.conversations import get_conversation_json
+from web.conversations import get_conversation_json, create_conversation
 from web.users import create_conversationee
 from flask.ext.security import auth_token_required, login_required
 from playhouse.shortcuts import model_to_dict
 from views.chat.exceptions import UserAlreadyExistsException
 import json
-
 
 chat = Blueprint('chat', __name__)
 
@@ -25,6 +24,20 @@ def add_header_after(r):
 def get_conversations_tab_data():
 	c = get_conversation_json()
 	return json.dumps({'conversations': c})
+
+@login_required
+@chat.route('/conversations', methods = ['POST'])
+def create_conversation_tab():
+	try:
+		c = dict()
+		c['name'] = request.json.get('name','')
+		c['conversation_type'] = request.json.get('conversation_type','')
+		c['conversationees_list'] = request.json.get('conversationees_list')
+		return json.dumps({'conversation': create_conversation(c)})
+
+	except Exception:
+		dump_error('Couldn\'t create conversation')
+
 
 @login_required
 @chat.route('/conversations/<conversation_id>')
@@ -56,6 +69,8 @@ def create_user_post():
 		
 	except UserAlreadyExistsException:
 		dump_error('User already exists')
+	except Exception:
+		dump_error('Couldn\'t create user')
 
 @login_required
 @cross_origin()
