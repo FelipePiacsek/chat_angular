@@ -69,4 +69,5 @@ def __jsonify_short_user(user_id=None, user_object=None):
 			return None
 	u = dict()
 	u['name'] = user_object.get_name()
+	u['id'] = user_object.id
 	return u
