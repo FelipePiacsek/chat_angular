@@ -4,7 +4,7 @@ from models import Conversation, ConversationParty, User, Role, UserRoles, Messa
 from web.helpers import datetime_to_string, dump_error, return_response
 from web.messages import save_message, get_message_json
 from web.conversations import get_conversation_json, create_conversation
-from web.users import create_conversationee
+from web.users import create_conversationee, get_all_conversationees
 from flask.ext.security import auth_token_required, login_required
 from playhouse.shortcuts import model_to_dict
 from views.chat.exceptions import UserAlreadyExistsException
@@ -19,10 +19,16 @@ def add_header_after(r):
 	r.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
 	return r
 
-@chat.route('/conversations')
+@chat.route('/conversationees')
 @login_required
-def get_conversations_tab_data():
-	c = get_conversation_json()
+def get_conversationees():
+	c = get_all_conversationees()
+	return json.dumps({'conversationees': c})
+
+@chat.route('/conversations/<user_id>')
+@login_required
+def get_user_conversations_tab_data(user_id):
+	c = get_conversation_json(user_id=user_id)
 	return json.dumps({'conversations': c})
 
 @login_required
@@ -39,10 +45,10 @@ def create_conversation_tab():
 		dump_error('Couldn\'t create conversation')
 
 
-@login_required
-@chat.route('/conversations/<conversation_id>')
-def get_conversation_tab_data(conversation_id):
-	return json.dumps({'conversation': get_conversation_json(conversation_id=conversation_id)})
+# @login_required
+# @chat.route('/conversations/<conversation_id>')
+# def get_conversation_tab_data(conversation_id):
+# 	return json.dumps({'conversation': get_conversation_json(conversation_id=conversation_id)})
 
 @login_required
 @chat.route('/conversations/<conversation_id>/messages')

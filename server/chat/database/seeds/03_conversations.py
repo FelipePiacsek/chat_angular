@@ -6,7 +6,10 @@ conversations = []
 conversationparties = []
 
 ct = ConversationType()
-ct.name = 'Normal'
+ct.name = 'direct'
+
+ct2 = ConversationType()
+ct2.name = 'group'
 
 c1 = Conversation()
 c1.name = 'Piacsek'
@@ -40,6 +43,7 @@ conversationparties.append(cp22)
 
 with database.transaction():
 	ct.save()
+	ct2.save()
 	for c in conversations:
 		c.save()
 	for cp in conversationparties:

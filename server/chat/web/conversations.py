@@ -1,4 +1,4 @@
-from models import Conversation, ConversationParty, ConversationType, Photo, database
+from models import Conversation, ConversationParty, ConversationType, Photo, User, database
 from web.helpers import datetime_to_string
 from web.photos import get_user_photo
 from peewee import fn
@@ -47,19 +47,20 @@ def create_conversation(conversation_object):
 	return __jsonify_one_conversation(c)
 
 
-def get_conversation_json(conversation_id=None):
+def get_conversation_json(user_id=None, conversation_id=None):
 	
 	if conversation_id:
 		conversations = Conversation.select().where(Conversation.id == conversation_id).first()
+	elif user_id:
+		conversations = Conversation.select().join(ConversationParty,on=Conversation.id==ConversationParty.conversation).where(ConversationParty.user==user_id)
 	else:
-		conversations = Conversation.select()
+		conversations = None
 	return __jsonify_conversations(conversations)
 		
 
 def __jsonify_conversations(conversations):
 
 		if conversations:
-			q = ConversationParty.select(ConversationParty.conversation, fn.Max(ConversationParty.last_message_ts)).group_by(ConversationParty.conversation)
 			if hasattr(conversations, '__iter__'):
 				json_list = []
 				for conversation in conversations:

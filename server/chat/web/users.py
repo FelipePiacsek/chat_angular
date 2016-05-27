@@ -3,6 +3,15 @@ from datetime import datetime
 from web.helpers import datetime_to_string
 from views.chat.exceptions import UserAlreadyExistsException
 
+def get_all_conversationees():
+
+	r = Role.get(Role.name=='conversationee')
+	users=User.select().join(UserRoles, on=User.id==UserRoles.user).where(UserRoles.role==r)
+	users_list=[]
+	for u in users:
+		users_list.append(__jsonify_short_user(user_object=u))
+	return users_list
+
 def create_conversationee(user_object):
 
 	email = user_object.get('email','')
@@ -51,4 +60,13 @@ def __jsonify_one_user(user_id=None, user_object=None):
 	u['picture'] = user_object.picture if user_object.picture else ''
 	u['created_at'] = datetime_to_string(user_object.created_at) if user_object.created_at else ''
 
+	return u
+
+def __jsonify_short_user(user_id=None, user_object=None):
+	if user_id:
+		user_object = User.select().where(User.id==user_id).first()
+		if not user_object:
+			return None
+	u = dict()
+	u['name'] = user_object.get_name()
 	return u
