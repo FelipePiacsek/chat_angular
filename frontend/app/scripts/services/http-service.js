@@ -10,6 +10,7 @@ angular.module('chatApp').service('HTTPService', ['$resource', 'Environment',  f
             post:{
                 method:"POST",
                 isArray:false
+                //headers:{'Content-Type' : 'application/json'}
                 //,headers:{'token' : token}
             },
             get:{

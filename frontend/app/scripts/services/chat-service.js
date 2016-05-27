@@ -74,4 +74,21 @@ angular.module('chatApp').service('ChatService',  function(HTTPService, Callback
 		ConversationsSocket.send(message);
 	};
 
+	this.createUser = function(){
+		var endpoint = "/create_user/";
+		var user = {};
+		user.username="felruivo";
+		user.password="felipe";
+		user.first_name="Felipe";
+		user.last_name="Piacsek";
+		user.picture="https://uploads.socialspirit.com.br/fanfics/capitulos/fanfiction-originais-bambam-enlouquecendo-no-treino-com-felipe-franco-5293873-070320161619.jpg";
+		user.email="felipe.piacsek@gmail.com";
+		console.log(user);
+	    HTTPService.requests(endpoint).post(user).$promise.then(function(response) {
+	    	console.log("Ok.");
+	    }, function(promise) {
+	        CallbackUtils.mostrarErros(promise);
+	    });
+	}
+
 });
