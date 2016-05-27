@@ -6,11 +6,13 @@ angular.module('chatApp').directive('conversationsTab', function(ChatService, Ar
 		templateUrl: 'views/chat/conversations-tab.html',
 		link: function(scope, element, attrs){
 			var callbackConversations = function(conversations) {
-				scope.conversations = conversations.conversations;
-				for (var i = 0; i < scope.conversations.length; i++){
-					scope.conversations[i].last_message.date = new Date(scope.conversations[i].last_message.date);
+				if(conversations.conversations){
+					scope.conversations = conversations.conversations;
+					for (var i = 0; i < scope.conversations.length; i++){
+						scope.conversations[i].last_message.date = new Date(scope.conversations[i].last_message.date);
+					}
+					scope.selectConversation(scope.conversations[0]);
 				}
-				scope.selectConversation(scope.conversations[0]);
 			};
 
 			var callbackNotification = function(notification){
