@@ -1,6 +1,7 @@
 from datetime import datetime
 from web.config import config
 from flask import make_response
+import json
 import os
 
 def datetime_to_string(datetime):
@@ -19,5 +20,5 @@ def dump_error(message):
 	return json.dumps({'error': message})
 
 def return_response(response, status):
-	return make_response((response, status, {'Access-Control-Allow-Origin': '*'}))
+	return make_response((response, status, ''))
 

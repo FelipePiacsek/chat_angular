@@ -1,11 +1,17 @@
 from models import User, Role, UserRoles, user_datastore, database
 from datetime import datetime
 from web.helpers import datetime_to_string
+from views.chat.exceptions import UserAlreadyExistsException
 
 def create_conversationee(user_object):
+
+	email = user_object.get('email','')
+	if (User.select().where(User.email==email).first()):
+		raise UserAlreadyExistsException
+
 	u = User()
 	u.username = user_object.get('username','')
-	u.email = user_object.get('email','')
+	u.email = email
 	u.password = user_object.get('password')
 	u.first_name = user_object.get('first_name','')
 	u.last_name = user_object.get('last_name','')

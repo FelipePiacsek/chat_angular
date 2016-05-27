@@ -60,19 +60,19 @@ class Conversation(BaseModel):
 	conversation_type = ForeignKeyField(ConversationType)
 	last_message = ForeignKeyField(DeferredLastMessage, null=True)
 	name = CharField()
-	file = CharField(null = True)
-
+	
 class Message(BaseModel):
 	message_type = ForeignKeyField(MessageType)
 	conversation = ForeignKeyField(Conversation)
-	content = TextField(null = True)
+	content = TextField(null=True)
+	display_content = TextField(null=True)
 	ts = DateTimeField()
 
 	def run_constructor(self, args):
 		callback = getattr(message_functions_module, self.message_type.constructor)
 		if callback:
 			try:
-				self.content = callback(args)
+				self.content, self.display_content = callback(args)
 				return self.content
 			except Exception:
 				raise Exception('Found no valid constructor for message type.')
@@ -84,7 +84,7 @@ class ConversationParty(BaseModel):
 	last_read_message = ForeignKeyField(Message, null=True)
 	user = ForeignKeyField(User)
 	picture = ForeignKeyField(Photo, null=True)
-
+	file = CharField(null=True)
 
 user_datastore = PeeweeUserDatastore(database, User, Role, UserRoles)
 

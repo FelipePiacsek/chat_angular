@@ -14,41 +14,35 @@ chat = Blueprint('chat', __name__)
 
 @chat.after_request
 def add_header_after(r):
-	print('after_request')
-	r.headers['Access-Control-Allow-Origin'] = '*'
+	r.headers.add('Access-Control-Allow-Origin', '*')
+	r.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+	r.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
 	return r
 
-@cross_origin()
 @chat.route('/conversations')
+@login_required
 def get_conversations_tab_data():
 	c = get_conversation_json()
 	return json.dumps({'conversations': c})
 
-
-@cross_origin()
+@login_required
 @chat.route('/conversations/<conversation_id>')
 def get_conversation_tab_data(conversation_id):
 	return json.dumps({'conversation': get_conversation_json(conversation_id=conversation_id)})
 
-
-@cross_origin()
+@login_required
 @chat.route('/conversations/<conversation_id>/messages')
 def get_conversation_data(conversation_id):
 	return json.dumps({'messages':get_message_json(user_id=1, conversation_id=conversation_id)})
 
-@cross_origin()
 @chat.route('/')
 def home():
 	return 'home'
 
-@cross_origin()
+@login_required
 @chat.route('/create_user', methods=['POST'])
-def create_user():
+def create_user_post():
 	try:
-		email = request.json.get('email',None)
-		if (User.select().where(User.email==email).first()):
-			return dump_error('User already exists')
-
 		u = dict()
 		u['username'] = request.json.get('username','')
 		u['email'] = request.json.get('email','')
@@ -57,7 +51,13 @@ def create_user():
 		u['last_name'] = request.json.get('last_name','')
 		u['picture'] = request.json.get('picture',None)
 		json_user = create_conversationee(u)
-		return json.dumps(json_user) #json.dumps({'user': json_user})
+		return json.dumps({'user': json_user})
 		
-	except Exception:
-		raise Exception('Failed to create conversationee')
+	except UserAlreadyExistsException:
+		dump_error('User already exists')
+
+@login_required
+@cross_origin()
+@chat.route('/create_user', methods=['OPTIONS'])
+def create_user_options():
+	return return_response('create user options', 200)

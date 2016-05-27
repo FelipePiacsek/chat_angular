@@ -1,6 +1,7 @@
 from models import Message, MessageType, Conversation, ConversationParty, User, database
 from datetime import datetime
 from web.helpers import datetime_to_string
+from web.conversations import update_conversation
 import json
 import ast
 
@@ -33,6 +34,9 @@ def save_message(message):
 			m.save()
 			m.run_constructor(args)
 			m.save()
+
+			update_conversation(conversation_id=conversation_id,
+								last_message=m)
 
 		message_object = get_message_json(u.id, message_object=m)
 		message_object['recipient_ids'] = [cp.id for cp in cps]
