@@ -5,14 +5,14 @@ from web.conversations import update_conversation
 import json
 import ast
 
-def save_message(message):
+def save_message(user_id, message):
 	type_name = message.get('type_name')
 	args = message.get('args')
 	file = message.get('file', '')
 	conversation_id = message.get('conversation_id')
 	
 	mt = MessageType.select().where(MessageType.name == type_name).first()
-	u = User.select().where(User.id == 1).first()
+	u = User.select().where(User.id == user_id).first()
 	cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
 	myself = cps.select().where(ConversationParty.user == u).first()
 	number_of_conversationees = cps.count()

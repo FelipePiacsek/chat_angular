@@ -1,8 +1,9 @@
-from models import Conversation, ConversationParty, database
+from models import Conversation, ConversationParty, ConversationType, Photo, database
 from web.helpers import datetime_to_string
+from web.photos import get_user_photo
 from peewee import fn
 
-def update_conversation(conversation_id, last_message=None, name=None):
+def update_conversation(conversation_id, lasbot_message=None, name=None):
 	
 	Conversation.update(last_message=last_message, name=name).where(Conversation.id==conversation_id).execute()
 
@@ -19,21 +20,21 @@ def create_conversation(conversation_object):
 	c.conversation_type = ct
 
 	p = None
-	p_name = conversation_object.get('picture','')
-	if p_name:
-		p = Picture()
-		p.url = p_name
+	p_url = conversation_object.get('picture','')
+	if p_url:
+		p = Photo()
+		p.url = p_url
 
 	cps = []
 
 	conversationees_list = conversation_object.get('conversationees_list',[])
-	
-	for conversationee in conversationees_list:
+
+	for index, conversationee in conversationees_list:
 		
 		cp = ConversationParty()
 		cp.conversation = c
 		cp.user = User.get(User.id==conversationee)
-		picture = p if p else None
+		picture = p if p else get_user_photo(index, conversationees_list)
 		cps.append(cp)
 
 	with database.transaction():

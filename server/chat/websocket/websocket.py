@@ -14,9 +14,8 @@ class ChatHandler(WebSocketHandler):
 	def check_origin(self, origin):
 		return True # change in production
 
-	def open(self, *args, **kwargs):
-		print('Opening chat handler')
-		user_id = 1
+	def open(self, user_id):
+		print('Opening chat handler for user ' + user_id)
 		if user_id:
 			self.user_id = user_id
 			chat_backend.subscribe_user(self)
@@ -26,7 +25,7 @@ class ChatHandler(WebSocketHandler):
 	def on_message(self, message):
 		if message:
 			message_json = json.loads(message)
-			m = save_message(message_json)
+			m = save_message(self.user_id, message_json)
 			chat_backend.send_message_to_redis(m)
 		else:
 			raise ValueError('Received null message')
