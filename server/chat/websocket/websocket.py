@@ -2,6 +2,7 @@ from tornado.websocket import WebSocketHandler
 from web.messages import save_message
 from web.helpers import get_from_env
 from web.chat_backend import chat_backend
+from flask.ext.security import current_user
 import re
 import json
 
@@ -14,10 +15,12 @@ class ChatHandler(WebSocketHandler):
 	def check_origin(self, origin):
 		return True # change in production
 
-	def open(self, user_id):
-		print('Opening chat handler for user ' + user_id)
+	def open(self):
+		if not current_user:
+			raise ValueError
+		print('Opening chat handler for user ' + current_user.id)
 		if user_id:
-			self.user_id = user_id
+			self.user_id = current_user.id
 			chat_backend.subscribe_user(self)
 		else:
 			raise ValueError('Websocket must provide user id on open')

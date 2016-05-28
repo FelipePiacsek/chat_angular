@@ -18,7 +18,7 @@ tr = WSGIContainer(chat_app)
 define('port',default=get_from_env('server_path').split(':')[1])
 
 app = tornado.web.Application([
-	(r'/'+get_from_env('chat_uri')+'/(.*)', ChatHandler),
+	(r'/'+get_from_env('chat_uri'), ChatHandler),
 	(r'.*', FallbackHandler, dict(fallback=tr))
 ])
 

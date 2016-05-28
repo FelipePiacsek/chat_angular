@@ -4,7 +4,7 @@ from web.helpers import datetime_to_string, dump_error, return_response
 from web.messages import save_message, get_message_json
 from web.conversations import get_conversation_json, create_conversation
 from web.users import create_conversationee, get_all_conversationees
-from flask.ext.security import auth_token_required, login_required
+from flask.ext.security import auth_token_required, login_required, current_user
 from playhouse.shortcuts import model_to_dict
 from views.chat.exceptions import UserAlreadyExistsException
 import json
@@ -17,20 +17,21 @@ def get_conversationees():
 	c = get_all_conversationees()
 	return json.dumps({'conversationees': c})
 
-@chat.route('/conversations/<user_id>')
-@auth_token_required
-def get_user_conversations_tab_data(user_id):
-	c = get_conversation_json(user_id=user_id)
+@chat.route('/conversations/')
+@auth_token_required	
+def get_user_conversations_tab_data():
+	c = get_conversation_json(user_id=current_user.id)
 	return json.dumps({'conversations': c})
 
 @chat.route('/conversations', methods = ['POST'])
-@login_required
+@auth_token_required
 def create_conversation_tab():
 	try:
 		c = dict()
 		c['name'] = request.json.get('name','')
 		c['conversation_type'] = request.json.get('conversation_type','')
 		c['conversationees_list'] = request.json.get('conversationees_list')
+		c['conversationees_list'].append(current_user.id)
 		return json.dumps({'conversation': create_conversation(c)})
 
 	except Exception:
