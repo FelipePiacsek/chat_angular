@@ -12,7 +12,10 @@ app.factory('ConversationsSocket', function($websocket) {
       };
 
       this.onMessage = function(pointer){
-      	dataStream.onMessage(pointer);
+            if(!dataStream){
+                  this.connect();
+            }
+            dataStream.onMessage(pointer);
       };
 
       this.send = function(object){

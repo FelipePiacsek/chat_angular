@@ -9,6 +9,14 @@ angular.module('chatApp').service('UserData',  function($localStorage){
 		return $localStorage.id;
 	};
 
+	this.setToken = function(t){
+		$localStorage.token = t;
+	};
+	
+	this.getToken = function(){
+		return $localStorage.token;
+	};
+
 	this.clearData = function(){
 		$localStorage.id = null;
 	};

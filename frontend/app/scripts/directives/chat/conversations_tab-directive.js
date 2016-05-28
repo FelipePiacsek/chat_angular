@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').directive('conversationsTab', function(ChatService, ArrayUtils) {
+angular.module('chatApp').directive('conversationsTab', function(ChatService, ArrayUtils, ModalData) {
 
 	return {
 		restrict: 'E',
@@ -30,6 +30,11 @@ angular.module('chatApp').directive('conversationsTab', function(ChatService, Ar
 				scope.selectedConversation = c;
 				c.number_of_unread_messages = 0;
 				ChatService.setCurrentConversationId(c);
+			};
+
+			scope.openNewConversationModal = function(type){
+				ModalData.put('type', type);
+				$('#new-conversation-modal').modal('show');
 			};
 
 			var initController = function() {

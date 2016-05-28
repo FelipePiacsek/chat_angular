@@ -10,7 +10,7 @@ def update_conversation(conversation_id, lasbot_message=None, name=None):
 
 def create_conversation(conversation_object):
 
-	c['conversationees_list'] = request.json.get('conversationees_list')
+	c['conversationees_list'] = conversation_object.get('conversationees_list')
 
 	ct = ConversationType()
 	ct.get(ConversationType.name == conversation_object.get('conversation_type'))

@@ -15,7 +15,9 @@ angular.module('chatApp').controller('MainCtrl', function ($scope, $state, HTTPS
     	login.password = $scope.password;
     	HTTPService.requests('/login').post(login, function (data, responseHeaders) {
     		var id = parseInt(data.response.user.id);
+    		var token = data.response.user.authentication_token;
             UserData.setId(id);
+            UserData.setToken(token);
             ConversationsSocket.connect(id);
             $state.go("chat");
         }, function (promise) {

@@ -1,5 +1,4 @@
 from flask import Blueprint, request
-from flask.ext.cors import cross_origin
 from models import Conversation, ConversationParty, User, Role, UserRoles, Message, user_datastore
 from web.helpers import datetime_to_string, dump_error, return_response
 from web.messages import save_message, get_message_json
@@ -12,27 +11,20 @@ import json
 
 chat = Blueprint('chat', __name__)
 
-@chat.after_request
-def add_header_after(r):
-	r.headers.add('Access-Control-Allow-Origin', '*')
-	r.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-	r.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-	return r
-
 @chat.route('/conversationees')
-@login_required
+@auth_token_required
 def get_conversationees():
 	c = get_all_conversationees()
 	return json.dumps({'conversationees': c})
 
 @chat.route('/conversations/<user_id>')
-@login_required
+@auth_token_required
 def get_user_conversations_tab_data(user_id):
 	c = get_conversation_json(user_id=user_id)
 	return json.dumps({'conversations': c})
 
-@login_required
 @chat.route('/conversations', methods = ['POST'])
+@login_required
 def create_conversation_tab():
 	try:
 		c = dict()
@@ -50,8 +42,8 @@ def create_conversation_tab():
 # def get_conversation_tab_data(conversation_id):
 # 	return json.dumps({'conversation': get_conversation_json(conversation_id=conversation_id)})
 
-@login_required
 @chat.route('/conversations/<conversation_id>/messages')
+@login_required
 def get_conversation_data(conversation_id):
 	return json.dumps({'messages':get_message_json(user_id=1, conversation_id=conversation_id)})
 
@@ -59,8 +51,8 @@ def get_conversation_data(conversation_id):
 def home():
 	return 'home'
 
-@login_required
 @chat.route('/create_user', methods=['POST'])
+@login_required
 def create_user_post():
 	try:
 		u = dict()
@@ -77,9 +69,3 @@ def create_user_post():
 		dump_error('User already exists')
 	except Exception:
 		dump_error('Couldn\'t create user')
-
-@login_required
-@cross_origin()
-@chat.route('/create_user', methods=['OPTIONS'])
-def create_user_options():
-	return return_response('create user options', 200)

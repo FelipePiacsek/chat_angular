@@ -5,7 +5,7 @@ angular.module('chatApp').directive('conversationsInput', ['ChatService', functi
 		restrict: 'E',
 		templateUrl: 'views/chat/conversations-input.html',
 		link: function(scope, element, attrs){
-			scope.sendMessage = function(){
+			scope.sendMessage = function(){				
 				ChatService.sendTextMessage(scope.message);
 				scope.message = "";
 			};

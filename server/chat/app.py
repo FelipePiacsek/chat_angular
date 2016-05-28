@@ -7,7 +7,7 @@ from security_forms import ChatLoginForm
 from models import User, Role, UserRoles, user_datastore, database
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(chat, resources={r"/*": {"origins": "*"}})
 app.register_blueprint(chat)
 
 

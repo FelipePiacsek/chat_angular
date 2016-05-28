@@ -34,8 +34,9 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 	};
 
 	var loadConversationsList = function(){
-		var endpoint = "conversations/";
+		var endpoint = "conversations/" + UserData.getId();
 	    HTTPService.requests(endpoint).get().$promise.then(function(response) {
+	    	console.log(response);
 			for(var i = 0; i < conversationsReceivedCallback.length; i++){
 	    		conversationsReceivedCallback[i](response);
 	    	}
