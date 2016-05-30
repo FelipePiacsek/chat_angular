@@ -25,19 +25,18 @@ class ChatHandler(WebSocketHandler):
 		else:
 			raise ValueError('Websocket must provide user id on open')
 
-	def on_message(self, mark_as_read=None, message=None):
+	def on_message(self, message):
 		
-		if mark_as_read:
-			message_json = json.loads(mark_as_read)
+		message_json = json.loads(mark_as_read)
+		if message_json.get('type') == 'mark_as_read':
 			mark_message_as_read(user_id=self.user_id,
 								 message=message_json)
 
-		elif message:
-			message_json = json.loads(message)
+		elif message_json.get('type') == 'chat_message':
 			m = save_message(self.user_id, message_json)
 			chat_backend.send_message_to_redis(m)
 		else:
-			raise ValueError('Received null message')
+			raise ValueError('Invalid message')
 
 	def on_close(self):
 		chat_backend.unsubscribe_user(self)
