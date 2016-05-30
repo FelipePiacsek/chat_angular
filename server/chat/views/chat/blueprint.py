@@ -53,7 +53,6 @@ def home():
 	return 'home'
 
 @chat.route('/create_user', methods=['POST'])
-@login_required
 def create_user_post():
 	try:
 		u = dict()

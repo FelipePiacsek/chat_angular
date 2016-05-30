@@ -7,9 +7,8 @@ from security_forms import ChatLoginForm
 from models import User, Role, UserRoles, user_datastore, database
 
 app = Flask(__name__)
-CORS(chat, resources={r"/*": {"origins": "*"}})
 app.register_blueprint(chat)
-
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # change in production
 app.config['SECRET_KEY'] = 'super-secret'
