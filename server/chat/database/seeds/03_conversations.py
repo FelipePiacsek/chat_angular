@@ -1,4 +1,5 @@
 from models import BaseModel, User, Conversation, ConversationParty, ConversationType, Message, database
+from web.chat_config import config as conversation_config
 from datetime import datetime
 
 # Conversations and ConversationParties
@@ -6,10 +7,10 @@ conversations = []
 conversationparties = []
 
 ct = ConversationType()
-ct.name = 'direct'
+ct.name = covnersation_config.get('CONVERSATION_DIRECT_TYPE')
 
 ct2 = ConversationType()
-ct2.name = 'group'
+ct2.name = covnersation_config.get('CONVERSATION_GROUP_TYPE')
 
 c1 = Conversation()
 c1.conversation_type = ct

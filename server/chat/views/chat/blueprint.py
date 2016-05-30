@@ -6,7 +6,7 @@ from web.conversations import get_conversation_json, create_conversation
 from web.users import create_conversationee, get_all_conversationees
 from flask.ext.security import auth_token_required, login_required, current_user
 from playhouse.shortcuts import model_to_dict
-from views.chat.exceptions import UserAlreadyExistsException
+from views.chat.exceptions import UserAlreadyExistsException, InvalidConversationException
 import json
 
 chat = Blueprint('chat', __name__)
@@ -34,11 +34,15 @@ def create_conversation_tab():
 		c['conversationees_list'].append(current_user.id)
 		c['picture'] = request.json.get('picture','')
 
-		return json.dumps({'conversation': create_conversation(c)})
+		return json.dumps({'conversation': create_conversation(current_user.id, c)})
 
+	except InvalidConversationException as e:
+		print(e)
+	
 	except Exception as e:
 		print(e)
-		return dump_error('Couldn\'t create conversation')
+	
+	return dump_error('Couldn\'t create conversation')
 
 
 # @login_required

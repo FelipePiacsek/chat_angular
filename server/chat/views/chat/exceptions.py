@@ -1,5 +1,8 @@
 class UserAlreadyExistsException(Exception):
 	pass
 
-class InvalidMessageData(Exception):
+class InvalidMessageDataException(Exception):
+	pass
+
+class InvalidConversationException(Exception):
 	pass
