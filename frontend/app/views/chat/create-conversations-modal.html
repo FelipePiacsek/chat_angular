@@ -3,21 +3,23 @@
    <div class="modal-content">
      <div class="modal-header">
        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-       <h4 class="modal-title">Create a {{type}} conversation</h4>
+       <h4 class="modal-title">Create a {{$root.conversationType}} conversation</h4>
      </div>
       <div class="modal-body">
-        <h4>Select a conversationee</h4>
+        <div ng-if="$root.conversationType === 'group'">
+          <h4>Group's name</h4>
+          <input class="form-control" type="text" ng-model="groupName"></input>
+          <br>
+        </div>
         <div class="row">
            <div class="col-md-12">
-                <div ng-if="type === 'group'">
-                  <h4>Group's name</h4>
-                  <input class="form-control" type="text" ng-model="groupName"></input>
-                </div>
+
+                <h4>Select a conversationee</h4>  
                 <div>
                     <select style="width:135px;" class="form-control form-select inline" ng-model="selectedConversationee" ng-options="c as c.name for c in conversationees"> </select>
-                    <button class="btn btn-default inline" ng-if="type === 'group'" ng-click="addUserToGroup(selectedConversationee)"><i class="fa fa-plus"></i></button>
+                    <button class="btn btn-default inline" ng-if="$root.conversationType === 'group'" ng-click="addUserToGroup(selectedConversationee)"><i class="fa fa-plus"></i></button>
                 </div>
-                <div ng-if="type === 'group'">
+                <div ng-if="$root.conversationType === 'group'">
                   <h6>Selected conversationees</h6>
                   <ul>
                     <li ng-repeat="u in groupUsers">{{u.name}}</li>

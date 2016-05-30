@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').directive('createConversationsModal', ['UserData', 'ModalData', 'HTTPService', 'CallbackUtils', function(UserData, ModalData, HTTPService, CallbackUtils) {
+angular.module('chatApp').directive('createConversationsModal', ['$rootScope', 'UserData', 'ModalData', 'HTTPService', 'CallbackUtils', function($rootScope, UserData, ModalData, HTTPService, CallbackUtils) {
 
 	return {
 		restrict: 'E',
@@ -22,6 +22,7 @@ angular.module('chatApp').directive('createConversationsModal', ['UserData', 'Mo
 			        CallbackUtils.mostrarErros(promise);
 			    });
 			    scope.groupUsers = [];
+
 			};
 			initModal();
 
@@ -59,7 +60,7 @@ angular.module('chatApp').directive('createConversationsModal', ['UserData', 'Mo
 			};
 
 			scope.create = function(){
-				if(scope.type === 'group'){
+				if($rootScope.conversationType === 'group'){
 					createGroupConversation();
 				}else{
 					createDirectConversation();
@@ -70,9 +71,6 @@ angular.module('chatApp').directive('createConversationsModal', ['UserData', 'Mo
 				scope.groupUsers.push(user);
 			};
 
-			$('#new-conversation-modal').on('shown.bs.modal', function(){
-				scope.type = ModalData.get('type');
-			});
 		}
 	};
 
