@@ -80,6 +80,7 @@ def __jsonify_one_message(user, message):
 	m['type_name'] = message.message_type.name if message.message_type and message.message_type.name else ''
 	m['content'] = message.content if message.content else ''
 	m['sender'] = s
+	m['conversation_id'] = message.conversation_party.conversation.id
 	m['ts'] = datetime_to_string(message.ts) if message.ts else ''
 
 	return m
