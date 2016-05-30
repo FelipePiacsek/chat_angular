@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').service('ChatService',  function(UserData, HTTPService, CallbackUtils, ConversationsSocket, MessageFactory){
+angular.module('chatApp').service('ChatService',  function(UserData, HTTPService, CallbackUtils, ConversationsSocket, ChatMessageFactory, SocketMessageFactory){
 
 	var currentConversationId = null;
 
@@ -66,13 +66,15 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 
 	this.addConversationsReceivedCallback = function (callback){
 		conversationsReceivedCallback.push(callback);
-		loadConversationsList();
+		this.loadConversationsList();
 	};
 
 	this.sendTextMessage = function(text){
-		var message = MessageFactory.buildTextMessage(text, currentConversationId);
-		console.log(message);
-		ConversationsSocket.send(message);
+		var chatMessage = ChatMessageFactory.buildTextMessage(text, currentConversationId);
+		var socketMessage = SocketMessageFactory.buildMessage("chat_message", chatMessage);
+		console.log(chatMessage);
+		console.log(socketMessage);
+		ConversationsSocket.send(socketMessage);
 	};
 
 });

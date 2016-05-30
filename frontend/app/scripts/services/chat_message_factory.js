@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').service('MessageFactory',  function(){
+angular.module('chatApp').service('ChatMessageFactory',  function(){
 
 	this.buildTextMessage = function(text, currentConversationId){
 		var message = {};
