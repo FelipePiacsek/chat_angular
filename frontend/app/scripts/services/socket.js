@@ -1,10 +1,10 @@
 var conversationsHost = "ws://localhost:5000/chat/";
-app.factory('ConversationsSocket', function($websocket) {
+app.factory('ConversationsSocket', function($websocket, UserData) {
 
       var dataStream = null; 
 
-      this.connect = function(id){
-      	dataStream = $websocket(conversationsHost + id);
+      this.connect = function(){
+      	dataStream = $websocket(conversationsHost + UserData.getId());
       };
 
       this.disconnect = function(){

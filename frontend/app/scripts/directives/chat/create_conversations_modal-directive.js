@@ -27,6 +27,7 @@ angular.module('chatApp').directive('createConversationsModal', ['$rootScope', '
 			initModal();
 
 			var post = function(conversation){
+				console.log(conversation);
 				var endpoint = "conversations/"
 				HTTPService.requests(endpoint).post(conversation).$promise.then(function(response) {
 					$('#new-conversation-modal').modal('hide');
@@ -55,7 +56,7 @@ angular.module('chatApp').directive('createConversationsModal', ['$rootScope', '
 				conversation.name = scope.selectedConversationee.name;
 				conversation.conversationees_list = []; conversation.conversationees_list.push(scope.selectedConversationee.id);
 				
-				console.log(conversation);
+				
 				post(conversation);
 			};
 

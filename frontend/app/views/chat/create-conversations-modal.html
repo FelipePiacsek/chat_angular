@@ -6,7 +6,7 @@
        <h4 class="modal-title">Create a {{$root.conversationType}} conversation</h4>
      </div>
       <div class="modal-body">
-        <div ng-if="$root.conversationType === 'group'">
+        <div ng-show="$root.conversationType === 'group'">
           <h4>Group's name</h4>
           <input class="form-control" type="text" ng-model="groupName"></input>
           <br>
@@ -17,9 +17,9 @@
                 <h4>Select a conversationee</h4>  
                 <div>
                     <select style="width:135px;" class="form-control form-select inline" ng-model="selectedConversationee" ng-options="c as c.name for c in conversationees"> </select>
-                    <button class="btn btn-default inline" ng-if="$root.conversationType === 'group'" ng-click="addUserToGroup(selectedConversationee)"><i class="fa fa-plus"></i></button>
+                    <button class="btn btn-default inline" ng-show="$root.conversationType === 'group'" ng-click="addUserToGroup(selectedConversationee)"><i class="fa fa-plus"></i></button>
                 </div>
-                <div ng-if="$root.conversationType === 'group'">
+                <div ng-show="$root.conversationType === 'group'">
                   <h6>Selected conversationees</h6>
                   <ul>
                     <li ng-repeat="u in groupUsers">{{u.name}}</li>
