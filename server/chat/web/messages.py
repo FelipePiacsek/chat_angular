@@ -59,7 +59,7 @@ def mark_message_as_read(user_id, message=None, conversation_party=None):
 	if conversation_party:
 		cp = conversation_party
 	else:
-		cp = ConversationParty.select().where((ConversationParty.conversation==conversations) && (ConversationParty.user==user_id)).first()		
+		cp = ConversationParty.select().where((ConversationParty.conversation==conversations) & (ConversationParty.user==user_id)).first()		
 	
 	if cp and m:
 		with database.transaction():
