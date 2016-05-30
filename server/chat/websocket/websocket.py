@@ -34,7 +34,7 @@ class ChatHandler(WebSocketHandler):
 			message_type = message_json.get('type', '')
 			if message_type == chat_config.get('MESSAGE_MARK_AS_READ_TYPE'): 
 				mark_message_as_read(user_id=self.user_id,
-									 message=message_data.get('message_id'))
+									 message_id=message_data.get('message_id'))
 
 			elif message_type == chat_config.get('MESSAGE_CHAT_TYPE'):
 				m = save_message(self.user_id, message_data)

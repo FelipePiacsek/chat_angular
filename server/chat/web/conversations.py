@@ -98,10 +98,10 @@ def __jsonify_one_conversation(conversation_party):
 
 	lm['ts'] = datetime_to_string(conversation_party.conversation.last_message.ts) if conversation_party and conversation_party.conversation and conversation_party.conversation.last_message else ''
 	lm['text'] = conversation_party.conversation.last_message.display_content if conversation_party and conversation_party.conversation and conversation_party.conversation.last_message else ''
+	lm['sender'] = s
 
 	c['id'] = conversation_party.conversation.id if conversation_party and conversation_party.conversation else ''
 	c['last_message'] = lm
-	c['sender'] = s
 	c['name'] = conversation_party.name if conversation_party and conversation_party.name else ''
 
 	return c
