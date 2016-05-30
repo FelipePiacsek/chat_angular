@@ -23,6 +23,7 @@ def save_message(user_id, message):
 		raise InvalidMessageDataException('Couldn\'t save message: invalid message data')
 
 	m = Message()
+	
 	with database.transaction():								  
 		m.conversation_party = myself
 		m.message_type = mt
@@ -40,10 +41,10 @@ def save_message(user_id, message):
 
 	message_object = get_message_json(u.id, message=m)
 	message_object['recipient_ids'] = [cp.user.id for cp in cps]
+	
 	return json.dumps(message_object)
 
 def mark_message_as_read(message, conversation_party):
-	
 	with database.transaction():
 		conversation_party.update(last_read_message=message).execute()
 
@@ -78,7 +79,7 @@ def __jsonify_one_message(user, message):
 	s['id'] = message.conversation_party.user.id if message.conversation_party and message.conversation_party.user else ''
 
 	m['type_name'] = message.message_type.name if message.message_type and message.message_type.name else ''
-	m['content'] = message.content if message.content else ''
+	m['text'] = message.content if message.content else ''
 	m['sender'] = s
 	m['conversation_id'] = message.conversation_party.conversation.id
 	m['ts'] = datetime_to_string(message.ts) if message.ts else ''

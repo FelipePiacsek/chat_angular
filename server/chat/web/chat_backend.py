@@ -34,7 +34,6 @@ class ChatBackend(object):
 			message_to_client = copy(message_json)
 			del message_to_client['recipient_ids']
 			for recipient_id in message_json.get('recipient_ids'):
-				# pdb.set_trace()
 				user_client = self.chat_users.get(recipient_id,'')
 				if user_client:
 					gevent.spawn(self.send_message_to_client, user_client, message_to_client)

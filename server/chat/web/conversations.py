@@ -14,20 +14,20 @@ def update_conversation(conversation_id, last_message=None):
 def create_conversation(user_id, conversation):
 
 	conversation_type = conversation.get('conversation_type')
-	ct = ConversationType.get(ConversationType.name == conversation_type)
-
 	conversationees_list = conversation.get('conversationees_list')
 	conversationees_list = list(set(conversation.get('conversationees_list',[])))
 
 	if conversation_type == conversations_config.get('CONVERSATION_DIRECT_TYPE') and len(conversationees_list) != 2:
-		raise InvalidConversationException('Direct conversation should have 2 conversationees')
+		raise InvalidConversationException('Direct conversations should have 2 conversationees')
 
+
+
+	ct = ConversationType.get(ConversationType.name == conversation_type)
 	c = Conversation()
 	c.conversation_type = ct
 
-	picture = None
 	p_url = conversation.get('picture','')
-
+	picture = None
 	if p_url:
 		picture = Photo()
 		picture.url = p_url
@@ -35,6 +35,7 @@ def create_conversation(user_id, conversation):
 	name = conversation.get('name','')
 	
 	cps = []
+	
 	myself = None
 
 	for index, conversationee in enumerate(conversationees_list):
@@ -91,7 +92,7 @@ def __jsonify_one_conversation(conversation_party):
 	c = dict()
 	lm = dict()
 
-	lm['date'] = datetime_to_string(conversation_party.conversation.last_message.ts) if conversation_party and conversation_party.conversation and conversation_party.conversation.last_message else ''
+	lm['ts'] = datetime_to_string(conversation_party.conversation.last_message.ts) if conversation_party and conversation_party.conversation and conversation_party.conversation.last_message else ''
 	lm['text'] = conversation_party.conversation.last_message.display_content if conversation_party and conversation_party.conversation and conversation_party.conversation.last_message else ''
 
 	c['id'] = conversation_party.conversation.id if conversation_party and conversation_party.conversation else ''

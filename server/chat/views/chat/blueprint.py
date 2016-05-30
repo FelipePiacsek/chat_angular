@@ -32,7 +32,6 @@ def create_conversation_tab():
 		c['conversation_type'] = request.json.get('conversation_type','')
 		c['conversationees_list'] = request.json.get('conversationees_list')
 		c['conversationees_list'].append(current_user.id)
-		print(c['conversationees_list'])
 		c['picture'] = request.json.get('picture','')
 
 		return json.dumps({'conversation': create_conversation(current_user.id, c)})
@@ -44,12 +43,6 @@ def create_conversation_tab():
 		print(e)
 	
 	return dump_error('Couldn\'t create conversation')
-
-
-# @login_required
-# @chat.route('/conversations/<conversation_id>')
-# def get_conversation_tab_data(conversation_id):
-# 	return json.dumps({'conversation': get_conversation_json(conversation_id=conversation_id)})
 
 @chat.route('/conversations/<conversation_id>/messages')
 @auth_token_required
