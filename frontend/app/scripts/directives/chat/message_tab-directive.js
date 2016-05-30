@@ -8,8 +8,11 @@ angular.module('chatApp').directive('messagesTab', ['ChatService', 'UserData', '
 
 			var time = 40;
 			var scroll = function(){
-				$(".mar-btm:last-child")[0].scrollIntoView()
+				if(scope.messages && scope.messages.length > 0){
+					$(".mar-btm:last-child")[0].scrollIntoView();
+				}
 			};
+
 			var callbackMessages = function(messages) {
 				scope.messages = messages.messages;
 				$timeout(scroll, time);
