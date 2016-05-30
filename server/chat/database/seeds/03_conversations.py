@@ -7,10 +7,10 @@ conversations = []
 conversationparties = []
 
 ct = ConversationType()
-ct.name = covnersation_config.get('CONVERSATION_DIRECT_TYPE')
+ct.name = conversation_config.get('CONVERSATION_DIRECT_TYPE')
 
 ct2 = ConversationType()
-ct2.name = covnersation_config.get('CONVERSATION_GROUP_TYPE')
+ct2.name = conversation_config.get('CONVERSATION_GROUP_TYPE')
 
 c1 = Conversation()
 c1.conversation_type = ct

@@ -5,6 +5,8 @@ import gevent
 import json
 from copy import copy
 
+import pdb
+
 class ChatBackend(object):
 
 	def __init__(self):
@@ -32,13 +34,14 @@ class ChatBackend(object):
 			message_to_client = copy(message_json)
 			del message_to_client['recipient_ids']
 			for recipient_id in message_json.get('recipient_ids'):
-				user_client = self.chat_users.get(recipient_id)
+				# pdb.set_trace()
+				user_client = self.chat_users.get(recipient_id,'')
 				if user_client:
 					gevent.spawn(self.send_message_to_client, user_client, message_to_client)
 
 	def subscribe_user(self, handler):
 		if handler and handler.user_id:
-			self.chat_users[handler.user_id] = handler 
+			self.chat_users[int(handler.user_id)] = handler
 		else:
 			raise ValueError('Invalid handler provided')
 

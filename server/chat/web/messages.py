@@ -40,7 +40,7 @@ def save_message(user_id, message):
 							 conversation_party=myself)
 
 	message_object = get_message_json(u.id, message=m)
-	message_object['recipient_ids'] = [cp.id for cp in cps]
+	message_object['recipient_ids'] = [cp.user.id for cp in cps]
 	return json.dumps(message_object)
 
 def mark_message_as_read(user_id, message=None, conversation_party=None):

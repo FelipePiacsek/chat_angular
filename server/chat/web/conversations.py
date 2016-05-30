@@ -4,7 +4,7 @@ from web.photos import get_user_photo
 from web.users import get_user_data
 from web.chat_config import config as conversations_config
 from views.chat.exceptions import InvalidConversationException
-from peewee import fn
+from peewee import fn, SelectQuery
 
 def update_conversation(conversation_id, last_message=None):
 	
@@ -72,7 +72,7 @@ def get_conversation_json(user_id, conversation_id=None):
 def __jsonify_conversations(user_id, conversations):
 
 		if conversations:
-			if hasattr(conversations, '__iter__'):
+			if hasattr(conversations, '__iter__') or isinstance(conversations, SelectQuery):
 				json_list = []
 				for conversation in conversations:
 					json_list.append(__jsonify_one_conversation(user_id, conversation))
