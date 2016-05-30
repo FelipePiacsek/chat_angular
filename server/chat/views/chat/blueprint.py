@@ -32,6 +32,7 @@ def create_conversation_tab():
 		c['conversation_type'] = request.json.get('conversation_type','')
 		c['conversationees_list'] = request.json.get('conversationees_list')
 		c['conversationees_list'].append(current_user.id)
+		print(c['conversationees_list'])
 		c['picture'] = request.json.get('picture','')
 
 		return json.dumps({'conversation': create_conversation(current_user.id, c)})
