@@ -24,6 +24,7 @@ angular.module('chatApp').directive('messagesTab', ['ChatService', 'UserData', '
 			};
 			
 			var initController = function() {
+				scope.messages = [];
 				ChatService.addMessagesReceivedCallback(callbackMessages);
 				ChatService.addNewMessageCallback(newSingleMessageCallback);
 			};
