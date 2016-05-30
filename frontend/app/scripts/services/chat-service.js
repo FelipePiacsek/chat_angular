@@ -33,7 +33,7 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 	    });
 	};
 
-	var loadConversationsList = function(){
+	this.loadConversationsList = function(){
 		var endpoint = "conversations/";
 	    HTTPService.requests(endpoint).get().$promise.then(function(response) {
 	    	console.log(response);

@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').directive('createConversationsModal', ['$rootScope', 'UserData', 'ModalData', 'HTTPService', 'CallbackUtils', function($rootScope, UserData, ModalData, HTTPService, CallbackUtils) {
+angular.module('chatApp').directive('createConversationsModal', ['$rootScope', 'UserData', 'ModalData', 'HTTPService', 'CallbackUtils', 'ChatService', function($rootScope, UserData, ModalData, HTTPService, CallbackUtils, ChatService) {
 
 	return {
 		restrict: 'E',
@@ -30,6 +30,7 @@ angular.module('chatApp').directive('createConversationsModal', ['$rootScope', '
 				console.log(conversation);
 				var endpoint = "conversations/"
 				HTTPService.requests(endpoint).post(conversation).$promise.then(function(response) {
+					ChatService.loadConversationsList();
 					$('#new-conversation-modal').modal('hide');
 			    }, function(promise) {
 			        CallbackUtils.mostrarErros(promise);
