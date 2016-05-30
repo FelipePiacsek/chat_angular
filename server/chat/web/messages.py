@@ -24,7 +24,7 @@ def save_message(user_id, message):
 
 	m = Message()
 	with database.transaction():								  
-		m.conversation = conversation_id
+		m.conversation_party = myself
 		m.message_type = mt
 		m.ts = datetime.now()
 		m.file = file
@@ -35,39 +35,25 @@ def save_message(user_id, message):
 		update_conversation(conversation_id=conversation_id,
 							last_message=m)
 
-		mark_message_as_read(user_id=user_id,
-							 message=m,
+		mark_message_as_read(message=m,
 							 conversation_party=myself)
 
 	message_object = get_message_json(u.id, message=m)
 	message_object['recipient_ids'] = [cp.user.id for cp in cps]
 	return json.dumps(message_object)
 
-def mark_message_as_read(user_id, message=None, conversation_party=None):
-	conversation = message.conversation
-	cp = None
-	m = None
+def mark_message_as_read(message, conversation_party):
 	
-	if isinstance(message, Message):
-		m = message
-	else:
-		m = Message.select().where(Message.conversation==conversation).order_by(Message.ts.desc()).first()
-
-	if conversation_party:
-		cp = conversation_party
-	else:
-		cp = ConversationParty.select().where((ConversationParty.conversation==conversations) & (ConversationParty.user==user_id)).first()		
-	
-	if cp and m:
-		with database.transaction():
-			cp.update(last_read_message=m).execute()
+	with database.transaction():
+		conversation_party.update(last_read_message=message).execute()
 
 
 
 def get_message_json(user_id, conversation_id=None, message=None):
 	messages = None
 	if conversation_id:
-		messages = Message.select().where(Message.conversation == conversation_id)
+		cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
+		messages = Message.select().where(Message.conversation_party << cps)
 	elif message:
 		messages = message
 
@@ -93,7 +79,7 @@ def __jsonify_one_message(user, message):
 
 	m['type_name'] = message.message_type.name if message.message_type and message.message_type.name else ''
 	m['content'] = message.content if message.content else ''
-	m['sender'] = s
+	m['sender'] = message.conversation_party.user.id if message.conversation_party and message.conversation_party.user else ''
 	m['ts'] = datetime_to_string(message.ts) if message.ts else ''
 
 	return m

@@ -35,6 +35,7 @@ def create_conversation(user_id, conversation):
 	name = conversation.get('name','')
 	
 	cps = []
+	myself = None
 
 	for index, conversationee in enumerate(conversationees_list):
 		
@@ -47,6 +48,9 @@ def create_conversation(user_id, conversation):
 		cp.picture = p
 		cps.append(cp)
 
+		if conversationee == user_id:
+			myself = cp
+
 
 	with database.transaction():
 		c.save()
@@ -55,45 +59,43 @@ def create_conversation(user_id, conversation):
 		for cp in cps:
 			cp.save()
 
-	return __jsonify_one_conversation(user_id, c)
+	return __jsonify_one_conversation(myself)
 
 
-def get_conversation_json(user_id, conversation_id=None):
+def get_conversation_json(user_id=None, conversation_id=None, conversation_party=None):
 	
 	if conversation_id and user_id:
-		conversations = Conversation.select().where(Conversation.id == conversation_id).first()
+		cps = ConversationParty.select().where((ConversationParty.conversation == conversation_id) & (ConversationParty.user == user_id)).first()
 	elif user_id:
-		conversations = Conversation.select().join(ConversationParty,on=Conversation.id==ConversationParty.conversation).where(ConversationParty.user==user_id)
-	else:
-		conversations = None
-	return __jsonify_conversations(user_id, conversations)
+		cps = ConversationParty.select().where(ConversationParty.user==user_id)
+	elif conversation_party:
+		cps = conversation_party
+	return __jsonify_conversations(cps)
 		
 
-def __jsonify_conversations(user_id, conversations):
+def __jsonify_conversations(conversation_parties):
 
-		if conversations:
-			if hasattr(conversations, '__iter__') or isinstance(conversations, SelectQuery):
+		if conversation_parties:
+			if hasattr(conversation_parties, '__iter__') or isinstance(conversation_parties, SelectQuery):
 				json_list = []
-				for conversation in conversations:
-					json_list.append(__jsonify_one_conversation(user_id, conversation))
+				for cp in conversation_parties:
+					json_list.append(__jsonify_one_conversation(cp))
 				return json_list
 			else:
-				return __jsonify_one_conversation(user_id, conversations)
+				return __jsonify_one_conversation(conversation_parties)
 		return None
 					
 
-def __jsonify_one_conversation(user_id, conversation):
-
-	cp = ConversationParty.select().where((ConversationParty.conversation == conversation) and (ConversationParty.user == user_id)).first()
+def __jsonify_one_conversation(conversation_party):
 
 	c = dict()
 	lm = dict()
 
-	lm['date'] = datetime_to_string(conversation.last_message.ts) if conversation and conversation.last_message else ''
-	lm['text'] = conversation.last_message.display_content if conversation.last_message else ''
+	lm['date'] = datetime_to_string(conversation_party.conversation.last_message.ts) if conversation_party and conversation_party.conversation and conversation_party.conversation.last_message else ''
+	lm['text'] = conversation_party.conversation.last_message.display_content if conversation_party and conversation_party.conversation and conversation_party.conversation.last_message else ''
 
-	c['id'] = conversation.id if conversation else ''
+	c['id'] = conversation_party.conversation.id if conversation_party and conversation_party.conversation else ''
 	c['last_message'] = lm
-	c['name'] = cp.name if cp and cp.name else ''
+	c['name'] = conversation_party.name if conversation_party and conversation_party.name else ''
 
 	return c
