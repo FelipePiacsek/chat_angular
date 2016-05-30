@@ -7,11 +7,9 @@
  * # AboutCtrl
  * Controller of the chatApp
  */
-angular.module('chatApp')
-  .controller('AboutCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];	
-  });
+angular.module('chatApp').controller('AboutCtrl', function ($scope, $state, UserData) {
+    $scope.logout = function(){
+    	UserData.clearData();
+    	$state.go("login");
+    };
+});
