@@ -2,7 +2,7 @@ from models import Message, MessageType, Conversation, ConversationParty, User, 
 from datetime import datetime
 from web.helpers import datetime_to_string
 from web.conversations import update_conversation
-from peewee import SelectQuery
+from peewee import fn, SelectQuery
 from views.chat.exceptions import InvalidMessageDataException
 import json
 import ast
@@ -36,7 +36,7 @@ def save_message(user_id, message):
 		update_conversation(conversation_id=conversation_id,
 							last_message=m)
 
-		mark_message_as_read(message=m,
+		mark_message_as_read(message_id=m.id,
 							 conversation_party=myself)
 
 	message_object = get_message_json(u.id, message=m)
@@ -44,11 +44,9 @@ def save_message(user_id, message):
 	
 	return json.dumps(message_object)
 
-def mark_message_as_read(message, conversation_party):
+def mark_message_as_read(message_id, conversation_party):
 	with database.transaction():
-		conversation_party.update(last_read_message=message).execute()
-
-
+		conversation_party.update(last_read_message=message_id).execute()
 
 def get_message_json(user_id, conversation_id=None, message=None):
 	messages = None
@@ -83,5 +81,13 @@ def __jsonify_one_message(user, message):
 	m['sender'] = s
 	m['conversation_id'] = message.conversation_party.conversation.id
 	m['ts'] = datetime_to_string(message.ts) if message.ts else ''
+	m['number_of_unread_messages'] = get_number_of_unread_messages(message.conversation_party)
+	m['id'] = message.id
 
 	return m
+
+def get_number_of_unread_messages(conversation_party):
+	if conversation_party.last_read_message:
+		return Message.select(fn.COUNT(Message.id)).where((Message.conversation_party==conversation_party) and Message.ts > conversation_party.last_read_message.ts)
+	else:
+		return Message.select(fn.COUNT(Message.id)).where((Message.conversation_party==conversation_party))
