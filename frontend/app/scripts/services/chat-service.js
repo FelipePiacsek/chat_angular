@@ -12,10 +12,10 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 	var conversations = {};
 
 	ConversationsSocket.onMessage(function(message) {
-		console.log("Socket response!");
-        console.log(message);
+        var content = angular.fromJson(message.data);
+        console.log(content);
     	for(var i = 0; i < newMessageCallback.length; i++){
-    		newMessageCallback[i](response);
+    		newMessageCallback[i](content);
     	}
     });
 
