@@ -78,7 +78,7 @@ def __jsonify_one_message(user, message):
 	m = dict()
 	s = dict()
 
-	s['name'] = user.get_name()
+	s['name'] = message.conversation_party.user.get_name() if message.conversation_party and message.conversation_party.user else ''
 	s['id'] = message.conversation_party.user.id if message.conversation_party and message.conversation_party.user else ''
 
 	m['type_name'] = message.message_type.name if message.message_type and message.message_type.name else ''
