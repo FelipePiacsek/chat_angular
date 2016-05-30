@@ -32,10 +32,13 @@ def create_conversation_tab():
 		c['conversation_type'] = request.json.get('conversation_type','')
 		c['conversationees_list'] = request.json.get('conversationees_list')
 		c['conversationees_list'].append(current_user.id)
+		c['picture'] = request.json.get('picture','')
+
 		return json.dumps({'conversation': create_conversation(c)})
 
-	except Exception:
-		dump_error('Couldn\'t create conversation')
+	except Exception as e:
+		print(e)
+		return dump_error('Couldn\'t create conversation')
 
 
 # @login_required
@@ -44,9 +47,9 @@ def create_conversation_tab():
 # 	return json.dumps({'conversation': get_conversation_json(conversation_id=conversation_id)})
 
 @chat.route('/conversations/<conversation_id>/messages')
-@login_required
+@auth_token_required
 def get_conversation_data(conversation_id):
-	return json.dumps({'messages':get_message_json(user_id=1, conversation_id=conversation_id)})
+	return json.dumps({'messages':get_message_json(user_id=current_user.id, conversation_id=conversation_id)})
 
 @chat.route('/')
 def home():
@@ -66,6 +69,7 @@ def create_user_post():
 		return json.dumps({'user': json_user})
 		
 	except UserAlreadyExistsException:
-		dump_error('User already exists')
-	except Exception:
-		dump_error('Couldn\'t create user')
+		return dump_error('User already exists')
+	except Exception as e:
+		print(e)
+		return dump_error('Couldn\'t create user')

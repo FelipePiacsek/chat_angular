@@ -2,29 +2,31 @@ from models import Message, MessageType, Conversation, ConversationParty, User, 
 from datetime import datetime
 from web.helpers import datetime_to_string
 from web.conversations import update_conversation
+from peewee import SelectQuery
 import json
 import ast
 
 def save_message(user_id, message):
-	type_name = message.get('type_name')
-	args = message.get('args')
-	file = message.get('file', '')
-	conversation_id = message.get('conversation_id')
-	
-	mt = MessageType.select().where(MessageType.name == type_name).first()
-	u = User.select().where(User.id == user_id).first()
-	cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
-	myself = cps.select().where(ConversationParty.user == u).first()
-	number_of_conversationees = cps.count()
 
-	if not mt or not u or not cps or not number_of_conversationees:
-		raise InvalidMessageData('Couldn\'t save message: invalid message data')
-
-	m = Message()
 
 	try:
+		type_name = message.get('type_name')
+		args = message.get('args')
+		file = message.get('file', '')
+		conversation_id = message.get('conversation_id')
+		
+		mt = MessageType.select().where(MessageType.name == type_name).first()
+		u = User.select().where(User.id == user_id).first()
+		cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
+		myself = cps.select().where(ConversationParty.user == u).first()
+		number_of_conversationees = cps.count()
+
+		if not mt or not u or not cps or not number_of_conversationees:
+			raise InvalidMessageData('Couldn\'t save message: invalid message data')
+
+		m = Message()
 		with database.transaction():								  
-			m.conversation_party = myself
+			m.conversation = conversation_id
 			m.message_type = mt
 			m.ts = datetime.now()
 			m.file = file
@@ -67,13 +69,10 @@ def mark_message_as_read(user_id, message=None, conversation_party=None):
 
 
 
-def get_message_json(user_id, conversation_id=None, conversation_party_id=None, message=None):
+def get_message_json(user_id, conversation_id=None, message=None):
 	messages = None
 	if conversation_id:
-		cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
-		messages = Message.select().where(Message.conversation_party << cps)
-	elif conversation_party_id:
-		messages = Message.select().where(Message.ConversationParty == conversation_party_id)
+		messages = Message.select().where(Message.conversation == conversation_id)
 	elif message:
 		messages = message
 
@@ -81,7 +80,7 @@ def get_message_json(user_id, conversation_id=None, conversation_party_id=None, 
 	return __jsonify_messages(user, messages)
 
 def __jsonify_messages(user, messages):
-	if messages and hasattr(messages, '__iter__') and user:
+	if messages and hasattr(messages, '__iter__') or isinstance(messages, SelectQuery) and user:
 		json_list = []
 		for message in messages:
 			json_list.append(__jsonify_one_message(user, message))
@@ -96,7 +95,6 @@ def __jsonify_one_message(user, message):
 
 	s['name'] = user.get_name()
 	s['id'] = user.id
-	s['picture'] = user.picture if user.picture else ''
 
 	m['type_name'] = message.message_type.name if message.message_type and message.message_type.name else ''
 	m['content'] = message.content if message.content else ''

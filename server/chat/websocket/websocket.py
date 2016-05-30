@@ -27,12 +27,13 @@ class ChatHandler(WebSocketHandler):
 
 	def on_message(self, message):
 		
-		message_json = json.loads(mark_as_read)
-		if message_json.get('type', '') == 'mark_as_read':
+		message_json = json.loads(message)
+		message_type = message_json.get('type', '')
+		if message_type == 'mark_as_read':
 			mark_message_as_read(user_id=self.user_id,
 								 message=message_json)
 
-		elif message_json.get('type', '') == 'chat_message':
+		elif message_type == 'chat_message':
 			m = save_message(self.user_id, message_json)
 			chat_backend.send_message_to_redis(m)
 		else:

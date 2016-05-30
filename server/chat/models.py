@@ -59,7 +59,6 @@ DeferredLastMessage = DeferredRelation()
 class Conversation(BaseModel):
 	conversation_type = ForeignKeyField(ConversationType)
 	last_message = ForeignKeyField(DeferredLastMessage, null=True)
-	name = CharField()
 	
 class Message(BaseModel):
 	message_type = ForeignKeyField(MessageType)
@@ -83,6 +82,7 @@ class ConversationParty(BaseModel):
 	conversation = ForeignKeyField(Conversation)
 	last_read_message = ForeignKeyField(Message, null=True)
 	user = ForeignKeyField(User)
+	name = CharField()
 	picture = ForeignKeyField(Photo, null=True)
 	file = CharField(null=True)
 
