@@ -12,6 +12,7 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 	var conversations = {};
 
 	ConversationsSocket.onMessage(function(message) {
+		console.log("Socket response!");
         console.log(message);
     	for(var i = 0; i < newMessageCallback.length; i++){
     		newMessageCallback[i](response);
@@ -72,8 +73,6 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 	this.sendTextMessage = function(text){
 		var chatMessage = ChatMessageFactory.buildTextMessage(text, currentConversationId);
 		var socketMessage = SocketMessageFactory.buildMessage("chat_message", chatMessage);
-		console.log(chatMessage);
-		console.log(socketMessage);
 		ConversationsSocket.send(socketMessage);
 	};
 

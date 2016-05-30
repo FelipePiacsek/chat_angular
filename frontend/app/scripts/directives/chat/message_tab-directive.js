@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').directive('messagesTab', ['ChatService', function(ChatService) {
+angular.module('chatApp').directive('messagesTab', ['ChatService', 'UserData', function(ChatService, UserData) {
 
 	return {
 		restrict: 'E',
@@ -16,7 +16,7 @@ angular.module('chatApp').directive('messagesTab', ['ChatService', function(Chat
 			initController();	
 
 			scope.isMine = function(message){
-				return message.id % 3 === 0;
+				return message.sender.id === UserData.getId();
 			};
 		}
 	};
