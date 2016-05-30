@@ -9,21 +9,21 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 				if(conversations.conversations){
 					scope.conversations = conversations.conversations;
 					for (var i = 0; i < scope.conversations.length; i++){
-						scope.conversations[i].last_message.date = new Date(scope.conversations[i].last_message.date);
+						scope.conversations[i].last_message.ts = new Date(scope.conversations[i].last_message.ts);
 					}
 					scope.selectConversation(scope.conversations[0]);
 				}
 			};
 
 			var callbackNotification = function(notification){
-				c = ArrayUtils.findById(conversations, notification.data.conversation_id);
-				if (scope.selectConversation.id !== notification.data.conversation_id){
-					if(!c.number_of_unread_messages){
-						c.number_of_unread_messages = 0;
-					}
-					c.number_of_unread_messages = c.number_of_unread_messages + 1;
+				var index = ArrayUtils.findIndex(scope.conversations, notification.conversation_id, function(a, b){return a.id == b});
+				var c = scope.conversations[index];
+				if (scope.selectConversation.id === notification.conversation_id){
+					//marcar como lido.
+					
 				}
-				c.last_message = notification.data.message;
+				c.number_of_unread_messages = notification.number_of_unread_messages;
+				c.last_message = notification;
 			};
 
 			scope.selectConversation = function(c){
@@ -40,7 +40,7 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 
 			var initController = function() {
 				ChatService.addConversationsReceivedCallback(callbackConversations);
-				ChatService.addNewMessageCallback(callbackConversations);
+				ChatService.addNewMessageCallback(callbackNotification);
 			};
 			initController();			
 		}

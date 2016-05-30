@@ -2,6 +2,7 @@
 angular.module('chatApp').service("ArrayUtils", function() {
 	
 	this.findIndex = function(array, object, comparator) {
+		var i = 0;
 		if(comparator){
 			for(i = 0; i < array.length; i++) {
 				if(comparator(array[i], object)) {

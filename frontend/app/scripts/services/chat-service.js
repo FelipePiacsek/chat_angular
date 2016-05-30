@@ -13,6 +13,7 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 
 	ConversationsSocket.onMessage(function(message) {
         var content = angular.fromJson(message.data);
+        content.ts = new Date(content.ts);
         console.log(content);
     	for(var i = 0; i < newMessageCallback.length; i++){
     		newMessageCallback[i](content);

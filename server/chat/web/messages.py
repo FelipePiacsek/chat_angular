@@ -44,13 +44,16 @@ def save_message(user_id, message):
 	
 	return json.dumps(message_object)
 
-def mark_message_as_read(message=None, message_id=None, conversation_party):
+def mark_message_as_read(message=None, message_id=None, conversation_party=None, user_id=None):
+	m = None
+	if message:
+		m = message
+	elif message_id:
+		m = Message.select().where(Message.id==message_id).first()
+	elif user_id:
+		cp = ConversationParty.select().where(ConversationParty.user == user_id).first()
+		m = Message.select().where(Message.conversation_party == cp).first()
 	with database.transaction():
-		m = None
-		if message:
-			m = message
-		elif message_id:
-			m = Message.select().where(Message.id==message_id).first()
 		conversation_party.update(last_read_message=m).execute()
 
 def get_message_json(user_id, conversation_id=None, message=None):
@@ -93,6 +96,6 @@ def __jsonify_one_message(user, message):
 
 def get_number_of_unread_messages(conversation_party):
 	if conversation_party.last_read_message:
-		return Message.select().where((Message.conversation_party==conversation_party) and Message.ts > conversation_party.last_read_message.ts).count()
+		return Message.select().where((Message.conversation_party==conversation_party) and Message.id > conversation_party.last_read_message.id).count()
 	else:
 		return Message.select().where((Message.conversation_party==conversation_party)).count()
