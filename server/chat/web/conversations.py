@@ -3,7 +3,7 @@ from web.helpers import datetime_to_string
 from web.photos import get_user_photo
 from peewee import fn
 
-def update_conversation(conversation_id, lasbot_message=None, name=None):
+def update_conversation(conversation_id, last_message=None, name=None):
 	
 	Conversation.update(last_message=last_message, name=name).where(Conversation.id==conversation_id).execute()
 

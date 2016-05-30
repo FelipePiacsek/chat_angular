@@ -35,22 +35,47 @@ def save_message(user_id, message):
 			update_conversation(conversation_id=conversation_id,
 								last_message=m)
 
-		message_object = get_message_json(u.id, message_object=m)
+			mark_message_as_read(user_id=user_id,
+								 message=m,
+								 conversation_party=myself)
+
+		message_object = get_message_json(u.id, message=m)
 		message_object['recipient_ids'] = [cp.id for cp in cps]
 		return json.dumps(message_object)
 
 	except Exception as e:
 		raise Exception('Couldn\'t create message object')
 
-def get_message_json(user_id, conversation_id=None, conversation_party_id=None, message_object=None):
+def mark_message_as_read(user_id, message=None, conversation_party=None):
+	conversation = message.conversation
+	cp = None
+	m = None
+	
+	if isinstance(message, Message):
+		m = message
+	else:
+		m = Message.select().where(Message.conversation==conversation).order_by(Message.ts.desc()).first()
+
+	if conversation_party:
+		cp = conversation_party
+	else:
+		cp = ConversationParty.select().where((ConversationParty.conversation==conversations) && (ConversationParty.user==user_id)).first()		
+	
+	if cp and m:
+		with database.transaction():
+			cp.update(last_read_message=m).execute()
+
+
+
+def get_message_json(user_id, conversation_id=None, conversation_party_id=None, message=None):
 	messages = None
 	if conversation_id:
 		cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
 		messages = Message.select().where(Message.conversation_party << cps)
 	elif conversation_party_id:
 		messages = Message.select().where(Message.ConversationParty == conversation_party_id)
-	elif message_object:
-		messages = message_object
+	elif message:
+		messages = message
 
 	user = User.select().where(User.id == user_id).first()
 	return __jsonify_messages(user, messages)

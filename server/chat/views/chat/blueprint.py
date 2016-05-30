@@ -17,7 +17,7 @@ def get_conversationees():
 	c = get_all_conversationees()
 	return json.dumps({'conversationees': c})
 
-@chat.route('/conversations/')
+@chat.route('/conversations')
 @auth_token_required	
 def get_user_conversations_tab_data():
 	c = get_conversation_json(user_id=current_user.id)
