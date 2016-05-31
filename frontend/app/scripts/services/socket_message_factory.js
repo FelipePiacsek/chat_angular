@@ -1,10 +1,28 @@
 'use strict';
 angular.module('chatApp').service('SocketMessageFactory',  function(){
 
+	var messageSending = function(data){
+		return data;
+	};
+
+	var markingAsRead = function(message){
+		var data = {};
+		data.message_id = message.message_id
+		return data;
+	};
+
+	var dataRetriever;
+	var initService = function(){
+		dataRetriever = {};
+		dataRetriever['mark_as_read'] = markingAsRead;
+		dataRetriever['chat_message'] = messageSending;
+	};
+	initService();
+
 	this.buildMessage = function(type, data){
 		var message = {};
 		message.type = type;
-		message.data = data;
+		message.data = dataRetriever[type](data);
 		return message;
 	};
 

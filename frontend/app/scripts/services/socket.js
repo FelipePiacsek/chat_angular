@@ -1,27 +1,32 @@
 var conversationsHost = "ws://localhost:5000/chat/";
 app.factory('ConversationsSocket', function($websocket, UserData) {
 
-      var dataStream = null; 
+      var dataStream = null;
+
+      var _callback;
 
       var connectionSuccessfull = function(){
-            console.log(UserData.getId() + " has connected to " + conversationsHost);
+            registerCallback(_callback);
+            console.log(UserData.getId() + " has connected and registered to " + conversationsHost);
       }
 
-      this.connect = function(){
+      this.connect = function(callback){
             var id = UserData.getId();
+            _callback = callback;
             console.log("User " + id + " is connecting to " + conversationsHost + ".");
       	dataStream = $websocket(conversationsHost + id);
             dataStream.onOpen(connectionSuccessfull);
       };
 
       this.disconnect = function(){
-      	dataStream.close();
+            if(dataStream){
+      	     dataStream.close(true);
+            }
+            dataStream = null;
       };
 
-      this.onMessage = function(pointer){
-            if(!dataStream){
-                  this.connect();
-            }
+      var registerCallback = function(pointer){
+            console.log("Registering callback for user " + UserData.getId());
             dataStream.onMessage(pointer);
       };
 

@@ -11,7 +11,7 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 
 	var conversations = {};
 
-	ConversationsSocket.onMessage(function(message) {
+	var socketCallback = function(message) {
 		console.log("Socket callback!");
 		var id = UserData.getId();
         var content = angular.fromJson(message.data);
@@ -23,7 +23,12 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
     	if(conversations[content.conversation_id]){
     		conversations[content.conversation_id].messages.push(content);
     	}
-    });
+    };
+
+    this.startChatSession = function(){
+    	ConversationsSocket.connect(socketCallback);
+    };
+    this.startChatSession();
 
 	var loadMessages = function(conversation){
 		var id = UserData.getId();
@@ -100,6 +105,13 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 
 	this.getCurrentConversationId = function(){
 		return currentConversationId;
+	};
+
+	this.markMessageAsRead = function(message){
+		console.log("Marking " + message.text + " as read.");
+		var socketMessage = SocketMessageFactory.buildMessage("mark_as_read", message);
+		console.log(socketMessage);
+		ConversationsSocket.send(socketMessage);	
 	};
 
 	this.destroy = function(){

@@ -7,7 +7,7 @@
  * # MainCtrl
  * Controller of the chatApp
  */
-angular.module('chatApp').controller('MainCtrl', function ($scope, $state, HTTPService, CallbackUtils, UserData, ConversationsSocket) {
+angular.module('chatApp').controller('MainCtrl', function ($scope, $state, HTTPService, CallbackUtils, UserData, ChatService) {
 
     $scope.login = function(){
     	var login = {};
@@ -18,7 +18,7 @@ angular.module('chatApp').controller('MainCtrl', function ($scope, $state, HTTPS
     		var token = data.response.user.authentication_token;
             UserData.setId(id);
             UserData.setToken(token);
-            ConversationsSocket.connect(id);
+            ChatService.startChatSession();
             $state.go("chat");
         }, function (promise) {
             CallbackUtils.mostrarErros(promise);
