@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from models import Conversation, ConversationParty, User, Role, UserRoles, Message, user_datastore
 from web.helpers import datetime_to_string, dump_error, return_response
-from web.messages import save_message, get_message_json
+from web.messages import save_message, get_message_json, mark_message_as_read
 from web.conversations import get_conversation_json, create_conversation
 from web.users import create_conversationee, get_all_conversationees
 from flask.ext.security import auth_token_required, login_required, current_user
@@ -33,6 +33,7 @@ def create_conversation_tab():
 		c['conversationees_list'] = request.json.get('conversationees_list')
 		c['conversationees_list'].append(current_user.id)
 		c['picture'] = request.json.get('picture','')
+		c['number_of_unread_messages'] = 0
 
 		return json.dumps({'conversation': create_conversation(current_user.id, c)})
 
@@ -47,7 +48,8 @@ def create_conversation_tab():
 @chat.route('/conversations/<conversation_id>/messages')
 @auth_token_required
 def get_conversation_data(conversation_id):
-	return json.dumps({'messages':get_message_json(user_id=current_user.id, conversation_id=conversation_id)})
+	mark_message_as_read(user_id=current_user.id, conversation_id=conversation_id)
+	return json.dumps({'messages':get_message_json(conversation_id=conversation_id)})
 
 @chat.route('/')
 def home():

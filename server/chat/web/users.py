@@ -7,7 +7,7 @@ def get_user_data(index, conversationees_list):
 	if not len(conversationees_list) == 2:
 		return None
 	user = User.select().where(User.id==conversationees_list[index-1]).first()
-	name = user.get_name if user else None
+	name = user.get_name() if user else None
 	picture = user.picture.id if user and user.picture else None
 	return name, picture
 

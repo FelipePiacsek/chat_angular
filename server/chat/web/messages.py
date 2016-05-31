@@ -2,6 +2,7 @@ from models import Message, MessageType, Conversation, ConversationParty, User, 
 from datetime import datetime
 from web.helpers import datetime_to_string
 from web.conversations import update_conversation
+from web.utils import get_number_of_unread_messages
 from peewee import SelectQuery
 from views.chat.exceptions import InvalidMessageDataException
 import json
@@ -41,43 +42,41 @@ def save_message(user_id, message):
 							 message=m,
 							 conversation_id=conversation_id)
 
-	message_object = get_message_json(u.id, message=m)
+	message_object = get_message_json(message=m)
 	message_object['recipient_ids'] = [cp.user.id for cp in cps]
 	
 	return json.dumps(message_object)
 
-def mark_message_as_read(user_id, conversation_id=None, message=None, message_id=None):
+def mark_message_as_read(user_id, conversation_id=None, message=None):
 	m = None
 	cp = None
 	if conversation_id:
 		cp = ConversationParty.select().where((ConversationParty.conversation==conversation_id) & (ConversationParty.user==user_id)).first()
+		if not message:
+			m = Message.select().where(Message.conversation==conversation_id).order_by(Message.ts.desc()).first()
 	if message:
 		m = message
-	elif message_id:
-		m = Message.select().where(Message==message_id).first()
 	with database.transaction():
 		ConversationParty.update(last_read_message=m).where(ConversationParty.id==cp).execute()
 
-def get_message_json(user_id, conversation_id=None, message=None):
+def get_message_json(conversation_id=None, message=None):
 	messages = None
 	if conversation_id:
 		messages = Message.select().where(Message.conversation==conversation_id)
 	elif message:
 		messages = message
+	return __jsonify_messages(messages)
 
-	user = User.select().where(User.id == user_id).first()
-	return __jsonify_messages(user, messages)
-
-def __jsonify_messages(user, messages):
-	if messages and hasattr(messages, '__iter__') or isinstance(messages, SelectQuery) and user:
+def __jsonify_messages(messages):
+	if messages and hasattr(messages, '__iter__') or isinstance(messages, SelectQuery):
 		json_list = []
 		for message in messages:
-			json_list.append(__jsonify_one_message(user, message))
+			json_list.append(__jsonify_one_message(message))
 		return json_list
 	else:
-		return __jsonify_one_message(user, messages)
+		return __jsonify_one_message(messages)
 
-def __jsonify_one_message(user, message):
+def __jsonify_one_message(message):
 
 	m = dict()
 	s = dict()
@@ -90,14 +89,6 @@ def __jsonify_one_message(user, message):
 	m['sender'] = s
 	m['conversation_id'] = message.conversation.id
 	m['ts'] = datetime_to_string(message.ts) if message.ts else ''
-	m['number_of_unread_messages'] = get_number_of_unread_messages(user_id=user.id,
-																   conversation_id=message.conversation.id)
 	m['message_id'] = message.id
 
 	return m
-
-def get_number_of_unread_messages(user_id, conversation_id):
-	cp = ConversationParty.select().where((ConversationParty.user==user_id) & (ConversationParty.conversation==conversation_id)).first()
-	m = cp.last_read_message
-	c = Message.select().where((Message.conversation==conversation_id) & (Message.ts > m.ts)).count()
-	return c

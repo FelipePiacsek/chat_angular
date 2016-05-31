@@ -3,6 +3,7 @@ from web.helpers import datetime_to_string
 from web.photos import get_user_photo
 from web.users import get_user_data
 from web.chat_config import config as conversations_config
+from web.utils import get_number_of_unread_messages
 from views.chat.exceptions import InvalidConversationException
 from peewee import fn, SelectQuery
 
@@ -19,8 +20,6 @@ def create_conversation(user_id, conversation):
 
 	if conversation_type == conversations_config.get('CONVERSATION_DIRECT_TYPE') and len(conversationees_list) != 2:
 		raise InvalidConversationException('Direct conversations should have 2 conversationees')
-
-
 
 	ct = ConversationType.get(ConversationType.name == conversation_type)
 	c = Conversation()
@@ -40,7 +39,16 @@ def create_conversation(user_id, conversation):
 
 	for index, conversationee in enumerate(conversationees_list):
 		
-		n, p = name, picture if conversation_type == 'group' else get_user_data(index, conversatinees_list)
+		n = None
+		p = None
+
+		if conversation_type == 'group':
+			n = name
+			p = picture
+		else:
+			data = get_user_data(index, conversationees_list)
+			n = data[0]
+			p = data[1]
 
 		cp = ConversationParty()
 		cp.conversation = c
@@ -102,6 +110,8 @@ def __jsonify_one_conversation(conversation_party):
 
 	c['id'] = conversation_party.conversation.id if conversation_party and conversation_party.conversation else ''
 	c['last_message'] = lm
+	c['sender'] = s
 	c['name'] = conversation_party.name if conversation_party and conversation_party.name else ''
+	c['number_of_unread_messages'] = get_number_of_unread_messages(conversation_party.user.id, conversation_party.conversation.id)
 
 	return c

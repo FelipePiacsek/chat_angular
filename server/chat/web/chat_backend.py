@@ -1,5 +1,6 @@
 from tornado.websocket import WebSocketHandler
 from web.helpers import get_from_env
+from web.messages import get_number_of_unread_messages
 import redis
 import gevent
 import json
@@ -34,25 +35,21 @@ class ChatBackend(object):
 			message_to_client = copy(message_json)
 			del message_to_client['recipient_ids']
 			for recipient_id in message_json.get('recipient_ids'):
-				print(message_json.get('recipient_ids'))
-				print(recipient_id)
 				user_client = self.chat_users.get(recipient_id,'')
-				print(user_client)
+				message_to_client['number_of_unread_messages']=get_number_of_unread_messages(recipient_id, message_to_client.get('conversation_id'))
 				if user_client:
-					print('hi')
-					print(user_client)
 					gevent.spawn(self.send_message_to_client, user_client, message_to_client)
 
 	def subscribe_user(self, handler):
 		if handler and handler.user_id:
 			self.chat_users[int(handler.user_id)] = handler
+			print(str(self.chat_users) + " are subscribed so far")
 		else:
 			raise ValueError('Invalid handler provided')
 
 	def unsubscribe_user(self, handler):
 		if handler and handler.user_id:
-			del self.chat_users[handler.user_id]
-			self.chat_users.get(handler.user_id)
+			del self.chat_users[int(handler.user_id)]
 		else:
 			raise ValueError('Invalid handler provided')
 
@@ -61,13 +58,10 @@ class ChatBackend(object):
 
 	def send_message_to_client(self, client, message):
 		try:
-			print('hi2')
-			print(client.user_id)
-			print(client)
-			print(message)
+			# pdb.set_trace()
 			client.write_message(message)
 		except Exception:
-			raise Exception('Couldn\'t send chat message to client')
+			unsubscribe_user(self, client)
 
 chat_backend = ChatBackend()
 chat_backend.start()

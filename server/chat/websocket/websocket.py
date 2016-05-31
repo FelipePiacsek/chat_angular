@@ -20,8 +20,8 @@ class ChatHandler(WebSocketHandler):
 	def open(self, user_id):
 		
 		if user_id:
-			self.user_id = user_id
-			print('Opening chat handler for user ' + self.user_id)
+			self.user_id = int(user_id)
+			print('Opening chat handler for user ' + str(self.user_id))
 			chat_backend.subscribe_user(self)
 		else:
 			raise ValueError('Websocket must provide user id on open')
@@ -34,7 +34,7 @@ class ChatHandler(WebSocketHandler):
 			message_type = message_json.get('type', '')
 			if message_type == chat_config.get('MESSAGE_MARK_AS_READ_TYPE'): 
 				mark_message_as_read(user_id=self.user_id,
-									 message_id=message_data.get('message_id'))
+									 conversation_id=message_data.get('conversation_id'))
 
 			elif message_type == chat_config.get('MESSAGE_CHAT_TYPE'):
 				m = save_message(self.user_id, message_data)
@@ -47,7 +47,7 @@ class ChatHandler(WebSocketHandler):
 			print(e)
 
 	def on_close(self):
-		print('Closing chat handler for user ' + self.user_id)
+		print('Closing chat handler for user ' + str(self.user_id))
 		chat_backend.unsubscribe_user(self)
 
 
