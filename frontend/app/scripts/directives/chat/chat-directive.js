@@ -9,7 +9,12 @@ angular.module('chatApp').directive('chatComponent', ['ChatService', function(Ch
 		templateUrl: 'views/chat/chat-component.html',
 		link: function(scope, element, attrs){
 			
-		}
+		},
+		controller: ['$scope', 'ChatService', function($scope, ChatService){
+			$scope.$on('$destroy', function(){
+				ChatService.destroy();
+			});
+		}]
 	};
 
 

@@ -8,7 +8,7 @@
     			<div class="nano has-scrollbar" style="height:380px">
     				<div class="nano-content pad-all" tabindex="0" style="right: -17px;">
     					<ul class="list-unstyled media-block">
-							<li class="mar-btm" ng-repeat="message in messages">
+							<li class="mar-btm" ng-repeat="message in messages track by message.message_id">
     							<div ng-class="isMine(message) ? 'media-right' : 'media-left'" ng-if="message.number_of_conversationees > 2">
     								<img ng-src="{{message.sender.picture}}" class="img-circle img-sm" alt="Profile picture">
     							</div>

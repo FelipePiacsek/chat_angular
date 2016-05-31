@@ -9,18 +9,24 @@ angular.module('chatApp').directive('messagesTab', ['ChatService', 'UserData', '
 			var time = 40;
 			var scroll = function(){
 				if(scope.messages && scope.messages.length > 0){
-					$(".mar-btm:last-child")[0].scrollIntoView();
+					var view = $(".mar-btm:last-child");
+					if (view && view[0]){
+						view[0].scrollIntoView();
+					}
 				}
 			};
 
 			var callbackMessages = function(messages) {
-				scope.messages = messages.messages;
+				scope.messages = messages.messages.slice();
+				console.log(scope.messages);
 				$timeout(scroll, time);
 			};
 
 			var newSingleMessageCallback = function(message){
-				scope.messages.push(message);
-				$timeout(scroll, time);
+				if(message.conversation_id === ChatService.getCurrentConversationId()){
+					scope.messages.push(message);
+					$timeout(scroll, time);
+				}
 			};
 			
 			var initController = function() {
