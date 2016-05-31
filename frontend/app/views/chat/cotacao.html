@@ -1,0 +1,22 @@
+<div>
+	<div class="inline"> <!-- Foto -->
+		<div class="left-box">
+			<img class="picture-box" ng-src="{{parameters.company.picture}}">
+			<br>
+			<i class="fa fa-eye">Detalhes</i>
+		</div>
+	</div>
+	<div class="inline"> <!-- Informações da proposta -->
+		<h2><strong>{{parameters.company.name}}</strong></h2>
+		(recebida em {{parameters.date_received | date : 'dd/mm'}})
+
+		<br>
+		{{parameters.proposal.description}}
+		<br>
+		<div>
+			<div class="inline pull left">proposta: {{parameters.proposal.currency}}{{parameters.proposal.value}}/{{parameters.proposal.periodicity}}
+			</div>
+			<div class="inline pull right">expira em: {{parameters.proposal.expires_at | date : 'dd/mm'}}
+			</div>
+	</div>
+</div>

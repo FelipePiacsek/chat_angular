@@ -3,8 +3,15 @@ app.factory('ConversationsSocket', function($websocket, UserData) {
 
       var dataStream = null; 
 
+      var connectionSuccessfull = function(){
+            console.log(UserData.getId() + " has connected to " + conversationsHost);
+      }
+
       this.connect = function(){
-      	dataStream = $websocket(conversationsHost + UserData.getId());
+            var id = UserData.getId();
+            console.log("User " + id + " is connecting to " + conversationsHost + ".");
+      	dataStream = $websocket(conversationsHost + id);
+            dataStream.onOpen(connectionSuccessfull);
       };
 
       this.disconnect = function(){

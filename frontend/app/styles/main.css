@@ -88,11 +88,11 @@ body {
 .stretched{
   width: 700px;
 }
-.conversation-picture-box{
+.left-box{
   float: left;
   width: 60px;
 }
-.conversation-picture{
+.picture-box{
   float: left;
   width: 50px;
   height: 50px;
