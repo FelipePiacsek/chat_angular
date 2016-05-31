@@ -107,8 +107,8 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 		return currentConversationId;
 	};
 
-	this.markMessageAsRead = function(message){
-		console.log("Marking " + message.text + " as read.");
+	this.markAsRead = function(message){
+		console.log("Marking as read...");
 		var socketMessage = SocketMessageFactory.buildMessage("mark_as_read", message);
 		console.log(socketMessage);
 		ConversationsSocket.send(socketMessage);	

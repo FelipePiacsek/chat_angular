@@ -19,7 +19,7 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 				var index = ArrayUtils.findIndex(scope.conversations, notification.conversation_id, function(a, b){return a.id == b});
 				var c = scope.conversations[index];
 				if (scope.selectedConversation.id === notification.conversation_id){
-					ChatService.markMessageAsRead(notification);
+					ChatService.markAsRead(notification);
 				}
 				c.number_of_unread_messages = notification.number_of_unread_messages;
 				c.last_message = notification;

@@ -7,7 +7,7 @@ angular.module('chatApp').service('SocketMessageFactory',  function(){
 
 	var markingAsRead = function(message){
 		var data = {};
-		data.message_id = message.message_id
+		data.conversation_id = message.conversation_id
 		return data;
 	};
 

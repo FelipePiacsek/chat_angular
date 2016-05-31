@@ -18,6 +18,9 @@ angular.module('chatApp').directive('messagesTab', ['ChatService', 'UserData', '
 
 			var callbackMessages = function(messages) {
 				scope.messages = messages.messages.slice();
+				if(scope.messages && scope.messages.length > 0){
+					ChatService.markAsRead(scope.messages[0]);
+				}
 				console.log(scope.messages);
 				$timeout(scroll, time);
 			};
