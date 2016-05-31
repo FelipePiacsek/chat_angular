@@ -55,23 +55,16 @@ class ConversationType(BaseModel):
 	name = CharField()
 
 DeferredLastMessage = DeferredRelation()
-DeferredLastReadMessage = DeferredRelation()
 
 class Conversation(BaseModel):
 	conversation_type = ForeignKeyField(ConversationType)
 	last_message = ForeignKeyField(DeferredLastMessage, null=True)
-
-class ConversationParty(BaseModel):
-	conversation = ForeignKeyField(Conversation)
-	last_read_message = ForeignKeyField(DeferredLastReadMessage, null=True)
-	user = ForeignKeyField(User)
-	name = CharField()
-	picture = ForeignKeyField(Photo, null=True)
 	file = CharField(null=True)
 	
 class Message(BaseModel):
+	conversation = ForeignKeyField(Conversation)
+	sender = ForeignKeyField(User)
 	message_type = ForeignKeyField(MessageType)
-	conversation_party = ForeignKeyField(ConversationParty)
 	content = TextField(null=True)
 	display_content = TextField(null=True)
 	ts = DateTimeField()
@@ -86,7 +79,13 @@ class Message(BaseModel):
 				raise Exception('Found no valid constructor for message type.')
 
 DeferredLastMessage.set_model(Message)
-DeferredLastReadMessage.set_model(Message)
+
+class ConversationParty(BaseModel):
+	conversation = ForeignKeyField(Conversation)
+	last_read_message = ForeignKeyField(Message, null=True)
+	user = ForeignKeyField(User)
+	name = CharField()
+	picture = ForeignKeyField(Photo, null=True)
 
 user_datastore = PeeweeUserDatastore(database, User, Role, UserRoles)
 

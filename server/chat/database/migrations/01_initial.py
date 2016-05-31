@@ -13,11 +13,10 @@ try:
 	MessageType.create_table()
 	ConversationType.create_table()
 	Conversation.create_table()
-	ConversationParty.create_table()
 	Message.create_table()
+	ConversationParty.create_table()
 
 	database.create_foreign_key(Conversation, Conversation.last_message)
-	database.create_foreign_key(ConversationParty, ConversationParty.last_read_message)
 
 except Exception as e:
 	print('Error while creating schema %s' % e)

@@ -25,8 +25,9 @@ def save_message(user_id, message):
 	m = Message()
 	
 	with database.transaction():								  
-		m.conversation_party = myself
+		m.conversation = conversation_id
 		m.message_type = mt
+		m.sender_id = user_id
 		m.ts = datetime.now()
 		m.file = file
 		m.save()
@@ -36,31 +37,31 @@ def save_message(user_id, message):
 		update_conversation(conversation_id=conversation_id,
 							last_message=m)
 
-		mark_message_as_read(message=m,
-							 conversation_party=myself)
+		mark_message_as_read(user_id=user_id,
+							 message=m,
+							 conversation_id=conversation_id)
 
 	message_object = get_message_json(u.id, message=m)
 	message_object['recipient_ids'] = [cp.user.id for cp in cps]
 	
 	return json.dumps(message_object)
 
-def mark_message_as_read(message=None, message_id=None, conversation_party=None, user_id=None):
+def mark_message_as_read(user_id, conversation_id=None, message=None, message_id=None):
 	m = None
+	cp = None
+	if conversation_id:
+		cp = ConversationParty.select().where((ConversationParty.conversation==conversation_id) & (ConversationParty.user==user_id)).first()
 	if message:
 		m = message
 	elif message_id:
-		m = Message.select().where(Message.id==message_id).first()
-	elif user_id:
-		cp = ConversationParty.select().where(ConversationParty.user == user_id).first()
-		m = Message.select().where(Message.conversation_party == cp).first()
+		m = Message.select().where(Message==message_id).first()
 	with database.transaction():
-		conversation_party.update(last_read_message=m).execute()
+		ConversationParty.update(last_read_message=m).where(ConversationParty.id==cp).execute()
 
 def get_message_json(user_id, conversation_id=None, message=None):
 	messages = None
 	if conversation_id:
-		cps = ConversationParty.select().where(ConversationParty.conversation == conversation_id)
-		messages = Message.select().where(Message.conversation_party << cps)
+		messages = Message.select().where(Message.conversation==conversation_id)
 	elif message:
 		messages = message
 
@@ -81,21 +82,22 @@ def __jsonify_one_message(user, message):
 	m = dict()
 	s = dict()
 
-	s['name'] = message.conversation_party.user.get_name() if message.conversation_party and message.conversation_party.user else ''
-	s['id'] = message.conversation_party.user.id if message.conversation_party and message.conversation_party.user else ''
+	s['name'] = message.sender.get_name() if message.sender else ''
+	s['id'] = message.sender.id if message.sender else ''
 
 	m['type_name'] = message.message_type.name if message.message_type and message.message_type.name else ''
 	m['text'] = message.content if message.content else ''
 	m['sender'] = s
-	m['conversation_id'] = message.conversation_party.conversation.id
+	m['conversation_id'] = message.conversation.id
 	m['ts'] = datetime_to_string(message.ts) if message.ts else ''
-	m['number_of_unread_messages'] = get_number_of_unread_messages(message.conversation_party)
-	m['id'] = message.id
+	m['number_of_unread_messages'] = get_number_of_unread_messages(user_id=user.id,
+																   conversation_id=message.conversation.id)
+	m['message_id'] = message.id
 
 	return m
 
-def get_number_of_unread_messages(conversation_party):
-	if conversation_party.last_read_message:
-		return Message.select().where((Message.conversation_party==conversation_party) and Message.id > conversation_party.last_read_message.id).count()
-	else:
-		return Message.select().where((Message.conversation_party==conversation_party)).count()
+def get_number_of_unread_messages(user_id, conversation_id):
+	cp = ConversationParty.select().where((ConversationParty.user==user_id) & (ConversationParty.conversation==conversation_id)).first()
+	m = cp.last_read_message
+	c = Message.select().where((Message.conversation==conversation_id) & (Message.ts > m.ts)).count()
+	return c
