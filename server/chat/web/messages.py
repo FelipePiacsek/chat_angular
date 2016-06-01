@@ -4,8 +4,10 @@ from web.helpers import datetime_to_string
 from web.conversations import update_conversation
 from peewee import SelectQuery
 from views.chat.exceptions import InvalidMessageDataException
+from flask import jsonify
 import json
 import ast
+
 
 def save_message(user_id, message):
 	type_name = message.get('type_name')

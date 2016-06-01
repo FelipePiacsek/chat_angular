@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from models import Conversation, ConversationParty, User, Role, UserRoles, Message, user_datastore
 from web.helpers import datetime_to_string, dump_error, return_response
 from web.messages import save_message, get_message_json, mark_message_as_read
@@ -56,7 +56,7 @@ def get_conversation_tab(conversation_id):
 def get_conversation_data(conversation_id):
 	mark_message_as_read(user_id=current_user.id, conversation_id=conversation_id)
 	return json.dumps({'messages':get_message_json(conversation_id=conversation_id)})
-
+	
 @chat.route('/')
 def home():
 	return 'home'

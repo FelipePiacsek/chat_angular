@@ -43,6 +43,4 @@ def directive_quotation_mt(args):
 										 }
 						}
 
-	print(obj)
-
 	return obj, config['QUOTATION_DIRECTIVE_MT_DISPLAY_TEXT']

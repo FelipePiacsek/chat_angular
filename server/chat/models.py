@@ -1,4 +1,5 @@
 from peewee import PostgresqlDatabase, DeferredRelation, Model, CharField, PrimaryKeyField, BooleanField, DateTimeField, TextField, ForeignKeyField
+from playhouse.postgres_ext import JSONField
 from flask.ext.security import UserMixin, RoleMixin, PeeweeUserDatastore
 from datetime import datetime
 from web.config import config
@@ -66,7 +67,7 @@ class Message(BaseModel):
 	conversation = ForeignKeyField(Conversation)
 	sender = ForeignKeyField(User)
 	message_type = ForeignKeyField(MessageType)
-	content = TextField(null=True)
+	content = JSONField(null=True)
 	display_content = TextField(null=True)
 	ts = DateTimeField()
 
