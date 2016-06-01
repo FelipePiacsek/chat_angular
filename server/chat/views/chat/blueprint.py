@@ -45,6 +45,12 @@ def create_conversation_tab():
 	
 	return dump_error('Couldn\'t create conversation')
 
+@chat.route('/conversations/<conversation_id>', methods = ['GET'])
+@auth_token_required
+def get_conversation_tab(conversation_id):
+	c = get_conversation_json(user_id=current_user.id, conversation_id=conversation_id)
+	return json.dumps({'conversation': c})
+
 @chat.route('/conversations/<conversation_id>/messages')
 @auth_token_required
 def get_conversation_data(conversation_id):

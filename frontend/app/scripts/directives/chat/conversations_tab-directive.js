@@ -9,7 +9,9 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 				if(conversations.conversations){
 					scope.conversations = conversations.conversations;
 					for (var i = 0; i < scope.conversations.length; i++){
-						scope.conversations[i].last_message.ts = new Date(scope.conversations[i].last_message.ts);
+						if(scope.conversations[i].last_message.ts){
+							scope.conversations[i].last_message.ts = new Date(scope.conversations[i].last_message.ts);
+						}
 					}
 					scope.selectConversation(scope.conversations[0]);
 				}
@@ -18,11 +20,21 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 			var callbackNotification = function(notification){
 				var index = ArrayUtils.findIndex(scope.conversations, notification.conversation_id, function(a, b){return a.id == b});
 				var c = scope.conversations[index];
-				if (scope.selectedConversation.id === notification.conversation_id){
-					ChatService.markAsRead(notification);
+				if(c){
+					if (scope.selectedConversation.id === notification.conversation_id){
+						ChatService.markAsRead(notification);
+						c.number_of_unread_messages = 0;
+					}else{
+						c.number_of_unread_messages = notification.number_of_unread_messages;
+					}
+					c.last_message = notification;
+				}else{
+					var callbackLoad = function(newConversation){
+						newConversation.last_message.ts = new Date(newConversation.last_message.ts);
+						scope.conversations.push(newConversation);						
+					};
+					var newConversation = ChatService.loadConversation(notification.conversation_id, callbackLoad);
 				}
-				c.number_of_unread_messages = notification.number_of_unread_messages;
-				c.last_message = notification;
 			};
 
 			scope.selectConversation = function(c){
@@ -38,6 +50,7 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 			};
 
 			var initController = function() {
+				scope.conversations = [];
 				ChatService.addConversationsReceivedCallback(callbackConversations);
 				ChatService.addNewMessageCallback(callbackNotification);
 			};

@@ -16,10 +16,12 @@
 						<strong>{{c.name}}</strong>
 						<strong ng-if="c.number_of_unread_messages > 0">&nbsp&nbsp({{c.number_of_unread_messages}})</strong>
 					</h4>
-					<h4 class="list-group-item-heading conversation-item-header-date">{{c.last_message.ts | date : 'hh:MM' || ""}}</h4>
+					<h4 class="list-group-item-heading conversation-item-header-date" ng-show="c.last_message.ts">{{c.last_message.ts | date : 'hh:MM'}}</h4>
 				</div>
-				<p class="list-group-item-text">{{c.last_message.sender.name}}:&nbsp{{c.last_message.text}}</p>
+				<p class="list-group-item-text" ng-show="c.last_message.ts">{{c.last_message.sender.name}}:&nbsp{{c.last_message.text}}</p>
+				<p class="list-group-item-text" ng-hide="c.last_message.ts"><i>Não há mensagens na conversa.</i></p>
 			</div>
+
 	</div>
 	<create-conversations-modal></create-conversations-modal>
 </div>

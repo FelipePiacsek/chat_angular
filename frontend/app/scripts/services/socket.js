@@ -12,10 +12,12 @@ app.factory('ConversationsSocket', function($websocket, UserData) {
 
       this.connect = function(callback){
             var id = UserData.getId();
-            _callback = callback;
-            console.log("User " + id + " is connecting to " + conversationsHost + ".");
-      	dataStream = $websocket(conversationsHost + id);
-            dataStream.onOpen(connectionSuccessfull);
+            if(id){
+                  _callback = callback;
+                  console.log("User " + id + " is connecting to " + conversationsHost + ".");
+            	dataStream = $websocket(conversationsHost + id);
+                  dataStream.onOpen(connectionSuccessfull);
+            }
       };
 
       this.disconnect = function(){

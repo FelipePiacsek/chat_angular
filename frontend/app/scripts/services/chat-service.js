@@ -46,6 +46,16 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 	    });
 	};
 
+	this.loadConversation = function (conversation_id, callback) {
+		var endpoint = "/conversations/" + conversation_id;
+		HTTPService.requests(endpoint).get().$promise.then(function(response) {
+			callback(response.conversation);
+			return response.conversation;
+	    }, function(promise) {
+	        console.log("Erro ao carregar conversa.");
+	    });
+	};
+
 	this.loadConversationsList = function(){
 		var id = UserData.getId();
 		var endpoint = "conversations/";
