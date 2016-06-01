@@ -5,7 +5,7 @@ from datetime import datetime
 m = Message()
 m.conversation = Conversation.get(Conversation.id==1)
 m.sender = User.get(User.id==1)
-m.message_type = MessageType.get(MessageType.name=='directive_cotation_mt')
+m.message_type = MessageType.get(MessageType.name=='directive_quotation_mt')
 m.ts = datetime.now()
 
 args = {'currency':'R$',
