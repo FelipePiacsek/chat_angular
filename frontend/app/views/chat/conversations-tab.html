@@ -6,7 +6,7 @@
        </h3>
     </div>
     <br>
-	<div class="list-group-item cursor-pointer inline" ng-click="selectConversation(c)" ng-repeat="c in conversations" ng-class="selectedConversation.id === c.id ? 'active' : ''">
+	<div class="list-group-item cursor-pointer inline" ng-click="selectConversation(c)" ng-repeat="c in conversations | orderBy:'-last_message.ts' " ng-class="selectedConversation.id === c.id ? 'active' : ''">
 			<div class="left-box">
 				<img class="picture-box" ng-src="{{c.picture}}">
 			</div>	
@@ -16,7 +16,7 @@
 						<strong>{{c.name}}</strong>
 						<strong ng-if="c.number_of_unread_messages > 0">&nbsp&nbsp({{c.number_of_unread_messages}})</strong>
 					</h4>
-					<h4 class="list-group-item-heading conversation-item-header-date" ng-show="c.last_message.ts">{{c.last_message.ts | date : 'hh:MM'}}</h4>
+					<h4 class="list-group-item-heading conversation-item-header-date" ng-show="c.last_message.ts">{{c.last_message.ts | date : 'hh:mm'}}</h4>
 				</div>
 				<p class="list-group-item-text" ng-show="c.last_message.ts">{{c.last_message.sender.name}}:&nbsp{{c.last_message.text}}</p>
 				<p class="list-group-item-text" ng-hide="c.last_message.ts"><i>Não há mensagens na conversa.</i></p>

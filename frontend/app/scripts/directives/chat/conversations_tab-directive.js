@@ -5,6 +5,7 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 		restrict: 'E',
 		templateUrl: 'views/chat/conversations-tab.html',
 		link: function(scope, element, attrs){
+
 			var callbackConversations = function(conversations) {
 				if(conversations.conversations){
 					scope.conversations = conversations.conversations;
@@ -31,7 +32,7 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 				}else{
 					var callbackLoad = function(newConversation){
 						newConversation.last_message.ts = new Date(newConversation.last_message.ts);
-						scope.conversations.push(newConversation);						
+						scope.conversations.push(newConversation);
 					};
 					var newConversation = ChatService.loadConversation(notification.conversation_id, callbackLoad);
 				}
