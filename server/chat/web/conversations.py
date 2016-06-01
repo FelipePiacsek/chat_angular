@@ -1,9 +1,9 @@
 from models import Conversation, ConversationParty, ConversationType, Photo, User, database
 from web.helpers import datetime_to_string
+import web.messages
 from web.photos import get_user_photo
 from web.users import get_user_data
 from web.chat_config import config as conversations_config
-from web.utils import get_number_of_unread_messages
 from views.chat.exceptions import InvalidConversationException
 from peewee import fn, SelectQuery
 
@@ -112,6 +112,6 @@ def __jsonify_one_conversation(conversation_party):
 	c['last_message'] = lm
 	c['sender'] = s
 	c['name'] = conversation_party.name if conversation_party and conversation_party.name else ''
-	c['number_of_unread_messages'] = get_number_of_unread_messages(conversation_party.user.id, conversation_party.conversation.id)
+	c['number_of_unread_messages'] = web.messages.get_number_of_unread_messages(conversation_party.user.id, conversation_party.conversation.id)
 
 	return c

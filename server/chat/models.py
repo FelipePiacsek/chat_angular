@@ -3,6 +3,7 @@ from flask.ext.security import UserMixin, RoleMixin, PeeweeUserDatastore
 from datetime import datetime
 from web.config import config
 from web.helpers import get_from_env
+from views.chat.exceptions import InvalidMessageDataException
 import types
 import os
 import importlib
@@ -75,6 +76,9 @@ class Message(BaseModel):
 			try:
 				self.content, self.display_content = callback(args)
 				return self.content
+			except InvalidMessageDataException as e:
+				print(e)
+
 			except Exception:
 				raise Exception('Found no valid constructor for message type.')
 

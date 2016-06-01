@@ -2,32 +2,20 @@ from models import BaseModel, User, Conversation, ConversationParty, Message, Me
 from datetime import datetime
 
 # Messages
-messages = []
-num_msgs = 10
+m = Message()
+m.conversation = Conversation.get(Conversation.id==1)
+m.sender = User.get(User.id==1)
+m.message_type = MessageType.get(MessageType.name=='directive_cotation_mt')
+m.ts = datetime.now()
 
-cs = Conversation.select()
-mt_text = MessageType.get(MessageType.name=='common_text')
-
-for c in cs:
-	
-	cps = ConversationParty.select().where(ConversationParty.conversation == c)
-	
-	for i in range (1,num_msgs):
-
-		for cp in cps:
-
-			m = Message()
-			m.conversation_party = cp
-			m.message_type = mt_text
-			m.ts = datetime.now()
-			messages.append(m)
+args = {'currency':'R$',
+		'per_day_beneficiary_value':'20.50',
+		'number_of_beneficiaries':'5',
+		'company_name':'VR',
+		'company_picture':''
+	   }
 
 with database.transaction():
-	i = 0
-	for m in messages:
-		m.save()
-		args = dict()
-		args['text'] = 'this is sample text {} from {}'.format(str(i), cp.user.get_name())
-		m.run_constructor(args)
-		m.save()
-		i+=1
+	m.save()
+	m.run_constructor(args)
+	m.save()

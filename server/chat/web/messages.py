@@ -2,7 +2,6 @@ from models import Message, MessageType, Conversation, ConversationParty, User, 
 from datetime import datetime
 from web.helpers import datetime_to_string
 from web.conversations import update_conversation
-from web.utils import get_number_of_unread_messages
 from peewee import SelectQuery
 from views.chat.exceptions import InvalidMessageDataException
 import json
@@ -46,6 +45,13 @@ def save_message(user_id, message):
 	message_object['recipient_ids'] = [cp.user.id for cp in cps]
 	
 	return json.dumps(message_object)
+
+def get_number_of_unread_messages(user_id, conversation_id):
+	cp = ConversationParty.select().where((ConversationParty.user==user_id) & (ConversationParty.conversation==conversation_id)).first()
+	m = cp.last_read_message
+	if m:
+		return Message.select().where((Message.conversation==conversation_id) & (Message.ts > m.ts)).count()
+	return Message.select().where(Message.conversation==conversation_id).count()
 
 def mark_message_as_read(user_id, conversation_id=None, message=None):
 	m = None
