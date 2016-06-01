@@ -106,9 +106,10 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 		this.loadConversationsList();
 	};
 
-	this.sendTextMessage = function(text){
-		console.log("User " + UserData.getId() + " is sending a message: " + text);
-		var chatMessage = ChatMessageFactory.buildTextMessage(text, currentConversationId);
+	this.sendMessage = function(type, parameters){
+		console.log("User " + UserData.getId() + " is sending a message");
+		var chatMessage = ChatMessageFactory.buildMessage(type, parameters, currentConversationId);
+		console.log(chatMessage);
 		var socketMessage = SocketMessageFactory.buildMessage("chat_message", chatMessage);
 		ConversationsSocket.send(socketMessage);
 	};

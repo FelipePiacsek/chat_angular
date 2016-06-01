@@ -5,8 +5,15 @@ angular.module('chatApp').directive('conversationsInput', ['ChatService', functi
 		restrict: 'E',
 		templateUrl: 'views/chat/conversations-input.html',
 		link: function(scope, element, attrs){
-			scope.sendMessage = function(){				
-				ChatService.sendTextMessage(scope.message);
+			var getMessageType = function (message) {
+				if(message.startsWith("/cotacao, ")){
+					return "directive_quotation_mt";
+				}
+				return "common_text"
+			};
+			scope.sendMessage = function(){	
+				var type = getMessageType(scope.message);
+				ChatService.sendMessage(type, scope.message);
 				scope.message = "";
 			};
 		}

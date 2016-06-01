@@ -8,7 +8,7 @@ import json
 
 def common_text(args):
 	text = args.get('text', '')
-	return json.dumps({'text':text}), (text[:config['COMMON_TEXT_MAX_LEN']] + '...') if len(text) > config['COMMON_TEXT_MAX_LEN'] else text
+	return {'text':text}, (text[:config['COMMON_TEXT_MAX_LEN']] + '...') if len(text) > config['COMMON_TEXT_MAX_LEN'] else text
 
 def directive_quotation_mt(args):
 	obj = build_directive_skeleton()
@@ -45,4 +45,4 @@ def directive_quotation_mt(args):
 
 	print(obj)
 
-	return json.dumps(obj), config['QUOTATION_DIRECTIVE_MT_DISPLAY_TEXT']
+	return obj, config['QUOTATION_DIRECTIVE_MT_DISPLAY_TEXT']
