@@ -6,47 +6,44 @@ from datetime import datetime
 conversations = []
 conversationparties = []
 
-ct = ConversationType()
-ct.name = conversation_config.get('CONVERSATION_DIRECT_TYPE')
-
-ct2 = ConversationType()
-ct2.name = conversation_config.get('CONVERSATION_GROUP_TYPE')
+grupo = ConversationType()
+grupo.name = conversation_config.get('CONVERSATION_GROUP_TYPE')
 
 c1 = Conversation()
-c1.conversation_type = ct
+c1.conversation_type = grupo
 conversations.append(c1)
 
-c2 = Conversation()
-c2.conversation_type = ct
-conversations.append(c2)
+# c2 = Conversation()
+# c2.conversation_type = grupo
+# conversations.append(c2)
+
+# cp133 = ConversationParty()
+# cp133.conversation=c2
+# cp133.user=User.get(User.username=='ricardinho')
+# cp133.name='Vale-Refeição'
+# conversationparties.append(cp133)
+
+# cp144 = ConversationParty()
+# cp144.conversation=c2
+# cp144.user=User.get(User.username=='felipinho')
+# cp144.name='Vale-Refeição'
+# conversationparties.append(cp144)
+
 
 cp11 = ConversationParty()
 cp11.conversation=c1
-cp11.user=User.get(User.username=='ruivo')
-cp11.name='felipinho'
+cp11.user=User.get(User.username=='jess')
+cp11.name='Vale-Refeição'
 conversationparties.append(cp11)
 
 cp12 = ConversationParty()
 cp12.conversation=c1
 cp12.user=User.get(User.username=='felipinho')
-cp12.name='ruivo'
+cp12.name='Vale-Refeição'
 conversationparties.append(cp12)
 
-cp21 = ConversationParty()
-cp21.conversation=c2
-cp21.user=User.get(User.username=='felps')
-cp21.name='brunot'
-conversationparties.append(cp21)
-
-cp22 = ConversationParty()
-cp22.conversation=c2
-cp22.user=User.get(User.username=='brunot')
-cp22.name='felps'
-conversationparties.append(cp22)
-
 with database.transaction():
-	ct.save()
-	ct2.save()
+	grupo.save()
 	for c in conversations:
 		c.save()
 	for cp in conversationparties:

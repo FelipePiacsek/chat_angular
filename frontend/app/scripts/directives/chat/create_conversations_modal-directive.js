@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').directive('createConversationsModal', ['$rootScope', 'UserData', 'ModalData', 'HTTPService', 'CallbackUtils', 'ChatService', function($rootScope, UserData, ModalData, HTTPService, CallbackUtils, ChatService) {
+angular.module('chatApp').directive('createConversationsModal', ['$rootScope', 'UserData', 'HTTPService', 'CallbackUtils', 'ChatService', function($rootScope, UserData, HTTPService, CallbackUtils, ChatService) {
 
 	return {
 		restrict: 'E',

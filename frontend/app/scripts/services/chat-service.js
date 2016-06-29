@@ -14,6 +14,7 @@ angular.module('chatApp').service('ChatService',  function(UserData, HTTPService
 	var socketCallback = function(message) {
 		console.log("Socket callback!");
 		var id = UserData.getId();
+		console.log(message);
         var content = angular.fromJson(message.data);
         content.ts = new Date(content.ts);
         console.log(content);

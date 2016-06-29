@@ -31,6 +31,7 @@ class ChatBackend(object):
 	def run(self):
 		for data in self.__iter_data():
 			data_decoded = data.decode("utf-8")
+			#pdb.set_trace()
 			message_json = json.loads(data_decoded)
 			message_to_client = copy(message_json)
 			del message_to_client['recipient_ids']
@@ -53,7 +54,11 @@ class ChatBackend(object):
 		else:
 			raise ValueError('Invalid handler provided')
 
+	def send_error_to_redis(self, error):
+		pass
+
 	def send_message_to_redis(self, message):
+		#pdb.set_trace()
 		self.redis.publish(self.chat_channel, message)
 
 	def send_message_to_client(self, client, message):

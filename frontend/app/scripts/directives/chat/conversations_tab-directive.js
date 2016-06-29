@@ -1,5 +1,5 @@
 'use strict';
-angular.module('chatApp').directive('conversationsTab', function($rootScope, ChatService, ArrayUtils, ModalData) {
+angular.module('chatApp').directive('conversationsTab', function($rootScope, ChatService, ArrayUtils) {
 
 	return {
 		restrict: 'E',
@@ -46,7 +46,6 @@ angular.module('chatApp').directive('conversationsTab', function($rootScope, Cha
 
 			scope.openNewConversationModal = function(type){
 				$rootScope.conversationType = type;
-				ModalData.put('type', type);
 				$('#new-conversation-modal').modal('show');
 			};
 

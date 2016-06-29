@@ -111,7 +111,12 @@ body {
   float: left;
   margin-left: 3px;
 }
-.
+.pointer{
+  cursor: pointer;
+}
+.grey-background{
+  background-color: #f2f2f2;
+}
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {

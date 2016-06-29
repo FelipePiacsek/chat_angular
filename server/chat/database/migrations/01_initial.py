@@ -1,4 +1,4 @@
-from models import BaseModel, Photo, Role, User, UserRoles, MessageType, ConversationType, Conversation, Message, ConversationParty, database
+from models import BaseModel, TextContent, MessageContent, Photo, Role, User, UserRoles, MessageType, ConversationType, Conversation, Message, ConversationParty, Quotation, Company, database
 
 try:
 
@@ -12,6 +12,10 @@ try:
 	UserRoles.create_table()
 	MessageType.create_table()
 	ConversationType.create_table()
+	Quotation.create_table()
+	Company.create_table()
+	TextContent.create_table()
+	MessageContent.create_table()
 	Conversation.create_table()
 	Message.create_table()
 	ConversationParty.create_table()

@@ -16,7 +16,7 @@
     								<div class="speech">
     									<p class="media-heading">{{message.sender.name}}</p>
     									<p ng-if="message.type_name==='common_text'">{{message.content.text}}</p>
-                                        <p ng-if="message.type_name==='directive_cotation_mt'"><cotacao parameters="message.content.parameters"></cotacao></p>
+                                        <p ng-if="message.type_name==='directive_quotation_mt'"><cotacao parameters="message.content.parameters"></cotacao></p>
     									<p class="speech-time">
     										<i class="fa fa-clock-o fa-fw"></i> {{message.ts | date : 'hh:mm'}}
     									</p>

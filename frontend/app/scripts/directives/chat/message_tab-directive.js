@@ -20,6 +20,9 @@ angular.module('chatApp').directive('messagesTab', ['ChatService', 'UserData', '
 				scope.messages = messages.messages.slice();
 				if(scope.messages && scope.messages.length > 0){
 					ChatService.markAsRead(scope.messages[0]);
+					for(var i = 0; i < scope.messages.length; i++){
+						scope.messages[i].content = angular.fromJson(scope.messages[i].content);
+					}
 				}
 				console.log(scope.messages);
 				$timeout(scroll, time);

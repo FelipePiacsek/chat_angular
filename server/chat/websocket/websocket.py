@@ -1,11 +1,13 @@
 from tornado.websocket import WebSocketHandler
-from web.messages import save_message, mark_message_as_read
+from web.messages import save_message, mark_message_as_read, get_error_message
 from web.helpers import get_from_env
 from web.chat_backend import chat_backend
 from web.chat_config import config as chat_config
+from views.chat.exceptions import InvalidMessageDataException
 from flask.ext.security import current_user
 import re
 import json
+import pdb
 
 class ChatHandler(WebSocketHandler):
 
@@ -27,7 +29,6 @@ class ChatHandler(WebSocketHandler):
 			raise ValueError('Websocket must provide user id on open')
 
 	def on_message(self, message):
-		
 		try:
 			message_json = json.loads(message)
 			message_data = message_json.get('data')
@@ -41,6 +42,7 @@ class ChatHandler(WebSocketHandler):
 				chat_backend.send_message_to_redis(m)
 		
 		except InvalidMessageDataException as e:
+			#chat_backend.send_error_to_redis(get_error_message(e, self.user_id))
 			print(e)
 		
 		except Exception as e:

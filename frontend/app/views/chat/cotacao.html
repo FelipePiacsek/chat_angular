@@ -1,22 +1,27 @@
-<div>
+<div class="col-md-12 grey-background">
 	<div class="inline"> <!-- Foto -->
 		<div class="left-box">
 			<img class="picture-box" ng-src="{{parameters.company.picture}}">
 			<br>
-			<i class="fa fa-eye">Detalhes</i>
+			<div class="pointer" ng-click="detalhes=!detalhes">
+				<i class="fa fa-eye">Detalhes</i>
+			</div>
 		</div>
 	</div>
 	<div class="inline"> <!-- Informações da proposta -->
-		<h2><strong>{{parameters.company.name}}</strong></h2>
-		(recebida em {{parameters.date_received | date : 'dd/mm'}})
+		<h2><strong>{{parameters.company.name}}</strong> (recebida em {{parameters.date_received | date : 'dd/mm'}}) </h2>
+		
 
 		<br>
 		{{parameters.proposal.description}}
 		<br>
 		<div>
-			<div class="inline pull left">proposta: {{parameters.proposal.currency}}{{parameters.proposal.value}}/mensal
+			<div class="inline pull-left">proposta: {{parameters.proposal.currency}}{{parameters.proposal.total_value}}/mensal
 			</div>
-			<div class="inline pull right">expira em: {{parameters.proposal.expires_at | date : 'dd/mm'}}
+			<div class="inline pull-right">expira em: {{parameters.proposal.expires_at | date : 'dd/mm'}}
 			</div>
+	</div>
+	<div ng-show="detalhes">
+		<detalhes-cotacao parameters="parameters"></detalhes-cotacao>
 	</div>
 </div>
